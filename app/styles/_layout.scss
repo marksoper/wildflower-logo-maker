@@ -1,0 +1,19 @@
+.ember-view,
+.l-full {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+}
+
+.l-sidebar {
+    width: 325px;
+}
+
+.l-sidebar--highlight {
+    background-color: $offwhite;
+}
+
+.l-content {
+    flex: 1 1 auto;
+}
