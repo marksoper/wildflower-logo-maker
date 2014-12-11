@@ -15,7 +15,10 @@
 /libpeerconnection.log
 npm-debug.log
 testem.log
+/personal
+.ruby-version
 
 # vim cruft
 *~
 *.swp
+
