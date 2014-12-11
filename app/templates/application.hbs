@@ -2,17 +2,68 @@
     <section class="l-sidebar l-sidebar--highlight">
         <article class="widget">
             <label class="widget-label" for="">Enter your school name:</label>
-            <input type="text">
+            {{input class='widget-label' type='text' value=logo.name on='key-up' action='updateTitle'}}
         </article>
         <article class="widget">
             <label class="widget-label" for="">Choose a font:</label>
-            <input type="text">
+            {{view 'select' content=fonts
+                            value=logo.font
+                            optionLabelPath="content.title"
+                            optionValuePath="content.id"}}
         </article>
         <article class="widget">
-            <label class="widget-label" for="">Choose a font:</label>
-
+            <span class="widget-label" for="">Choose up to 3 flowers:</span>
+            <div class="box box--scroll">
+                <div class="grid grid--three grid--lines">
+                    {{#each flower in flowers}}
+                    <div class="grid-item"><button class="btn btn--image btn--highlight"><img {{bind-attr src=flower.location}}></button></div>
+                    {{/each}}
+                    <div class="gap"></div>
+                </div>
+                <!-- .grid -->
+            </div>
+            <!-- .box -->
         </article>
+        <!-- .widget -->
+        <article class="widget">
+            <span class="widget-label">Choose a color palette</span>
+            <div class="box">
+                <div class="grid grid--three">
+                    {{#each palette in palettes}}
+                    <div class="grid-item">
+                        <button class="btn btn--highlight">
+                            <div class="palette">
+                            {{#each color in palette.colors}}
+                                <div class="palette-color" {{bind-attr style=color}}></div>
+                            {{/each}}
+                            </div>
+                        </button>
+                    </div>
+                    {{/each}}
+                    <div class="gap"></div>
+                </div>
+                <!-- .grid -->
+            </div>
+            <!-- .box -->
+        </article>
+        <!-- .widget -->
+        <article class="widget">
+            <span class="widget-label">Choose an arrangement</span>
+            <div class="box">
+                <div class="grid grid--two">
+                    <div class="grid-item"><button class="btn btn--highlight"></button></div>
+                    <div class="grid-item"><button class="btn btn--highlight"></button></div>
+                    <div class="grid-item"><button class="btn btn--highlight"></button></div>
+                    <div class="grid-item"><button class="btn btn--highlight"></button></div>
+                </div>
+                <!-- .grid -->
+            </div>
+            <!-- .box -->
+        </article>
+        <!-- .widget -->
     </section>
+    <!-- .l-sidebar -->
     <main class="l-content">
     </main>
+    <!-- .l-content -->
 </div>

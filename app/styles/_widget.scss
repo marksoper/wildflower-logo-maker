@@ -1,0 +1,13 @@
+.widget {
+    margin-bottom: rems($base/2);
+}
+
+.widget-label {
+    display: block;
+}
+
+.widget-input {
+    display: block;
+    width: 100%;
+    @include box-sizing(border-box);
+}

@@ -1,3 +1,9 @@
+$base: 30;
+
+@function rems($size) {
+    @return 16 / $size * 1rem;
+}
+
 $offwhite: #f1f1f1;
 $lightestgray: #eaeaea;
 $lightergray: #c4c4c4;

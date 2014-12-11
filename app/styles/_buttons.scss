@@ -1,0 +1,19 @@
+.btn {
+    @include appearance(none);
+    background-color: transparent;
+    border: none;
+    padding: 0;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.btn--highlight {
+    width: 100%;
+    border: 5px solid transparent;
+
+    &.selected {
+        border-image: url(/assets/img/btn-border.jpg) 5 5 round;
+    }
+}
