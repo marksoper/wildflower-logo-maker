@@ -2,7 +2,7 @@
     <section class="l-sidebar l-sidebar--highlight">
         <article class="widget">
             <label class="widget-label" for="">Enter your school name:</label>
-            {{input class='widget-label' type='text' value=logo.name on='key-up' action='updateTitle'}}
+            {{input class='widget-label' type='text' value=logo.name}}
         </article>
         <article class="widget">
             <label class="widget-label" for="">Choose a font:</label>
@@ -15,8 +15,8 @@
             <span class="widget-label" for="">Choose up to 3 flowers:</span>
             <div class="box box--scroll">
                 <div class="grid grid--three grid--lines">
-                    {{#each flower in flowers}}
-                    <div class="grid-item"><button class="btn btn--image btn--highlight"><img {{bind-attr src=flower.location}}></button></div>
+                    {{#each flower in flowers}}                                     
+                    <div class="grid-item"><button class="btn btn--image btn--highlight" {{action 'toggleFlower' flower}} {{bind-attr class=flower.selected disabled='????'}}><img {{bind-attr src=flower.location}}></button></div>
                     {{/each}}
                     <div class="gap"></div>
                 </div>
@@ -34,7 +34,7 @@
                         <button class="btn btn--highlight">
                             <div class="palette">
                             {{#each color in palette.colors}}
-                                <div class="palette-color" {{bind-attr style=color}}></div>
+                            <div class="palette-color" {{bind-attr class=selected}}></div>
                             {{/each}}
                             </div>
                         </button>
@@ -64,6 +64,8 @@
     </section>
     <!-- .l-sidebar -->
     <main class="l-content">
+        <h2>selected flowers: {{selectedFlowers.length}}</h2>
+        {{fabric-canvas name=logo.name font=logo.font}}
     </main>
     <!-- .l-content -->
 </div>

@@ -1,17 +1,22 @@
 import Ember from "ember";
 
-var flowers = []
-
-for (var i = 1; i < 9; i++) {
-    flowers[i-1] = {
-        location : '/assets/img/flower' + i + '.jpeg'
-    }
-}
 
 export default Ember.Route.extend({
-    model: function() {
-        return {
-            flowers: flowers,
+    setupController: function(controller) {
+        controller.set('model', {
+            flowers : (function() {
+                var f = []
+                for (var i = 1; i < 9; i++) {
+                    f.push( Ember.Object.create({
+                        location: '/assets/img/flower' + i + '.jpeg',
+                        selected: false
+                    }) )
+                }
+                return f
+            })(),
+            logo : Ember.Object.create({
+                //selectedFlowers: Ember.computed.alias('flowers.selected')
+            }),
             fonts: [{
                 title: "Wild Child",
                 id: 1
@@ -28,6 +33,12 @@ export default Ember.Route.extend({
             }, {
                 colors: ["#EBD0D1","#FD46CD","#F4417F","#C5BBF8","#B88A76","#ADB2E0"]
             }]
+        })
+    },
+    actions: {
+        toggleFlower: function(flower) {
+            flower.set('selected', !flower.selected)
+            console.log(this.controller.get('selectedFlowers'))
         }
     }
 })
