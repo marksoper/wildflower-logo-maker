@@ -48,10 +48,6 @@ export default Ember.Component.extend({
         this.canvasSubtitle.centerH()
     },
     updateName: Ember.observer('name', function(fc, prop) {
-        if ( !this.canvasSubtitle.getVisible() ) {
-            this.canvasSubtitle.setVisible(true)
-        }
-
         var title = new fabric.Text(fc.get(prop), {
             left: 0,
             top: this.canvas.height/2 + 35,
@@ -62,11 +58,19 @@ export default Ember.Component.extend({
         this.canvasTitle.addWithUpdate(title).centerH()
 
         this.canvasSubtitle.setTop( this.canvas.height/2 + (title.height + 35) )
+        if ( !this.canvasSubtitle.getVisible() ) {
+            this.canvasSubtitle.setVisible(true)
+        }
+
     }),
     updateFlowers: Ember.observer('flowers', function(a) {
         var selectedFlowers = a.get('flowers')
         this.canvasFlowers.remove.apply(this.canvasFlowers, this.canvasFlowers.getObjects())
         selectedFlowers.forEach(placeFlower, this)
+
+        if ( this.canvasFlowers.isEmpty() ) {
+            this.canvas.renderAll()
+        }
     }),
     updateFont: Ember.observer('font', function() {
         //this.canvas update font
