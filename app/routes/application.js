@@ -33,10 +33,5 @@ export default Ember.Route.extend({
                 colors: ["#EBD0D1","#FD46CD","#F4417F","#C5BBF8","#B88A76","#ADB2E0"]
             }]
         })
-    },
-    actions: {
-        toggleFlower: function(flower) {
-            flower.set('selected', !flower.selected)
-        }
     }
 })
