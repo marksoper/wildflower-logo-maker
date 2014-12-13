@@ -1,6 +1,5 @@
 import Ember from "ember";
 
-
 export default Ember.Route.extend({
     setupController: function(controller) {
         controller.set('model', {
@@ -15,7 +14,7 @@ export default Ember.Route.extend({
                 return f
             })(),
             logo : Ember.Object.create({
-                //selectedFlowers: Ember.computed.alias('flowers.selected')
+                //selectedFlowers: controller.get('selectedFlowers')
             }),
             fonts: [{
                 title: "Wild Child",
@@ -38,7 +37,6 @@ export default Ember.Route.extend({
     actions: {
         toggleFlower: function(flower) {
             flower.set('selected', !flower.selected)
-            console.log(this.controller.get('selectedFlowers'))
         }
     }
 })
