@@ -5,9 +5,15 @@ var ApplicationController = Ember.ObjectController.extend({
         var flowers = this.get('flowers')
         return flowers.filterBy('selected', true)
     }.property('flowers.@each.selected'),
-    maxFlowers: function() {
-        return this.get('selectedFlowers').length >= 3
-    }.property('selectedFlowers')
+
+    actions: {
+        toggleFlower: function(flower) {
+          if (this.get('selectedFlowers.length') < 3 || flower.get('selected')) {
+              flower.set('selected', !flower.selected);
+          }
+        }
+    }
+
 })
 
 export default ApplicationController
