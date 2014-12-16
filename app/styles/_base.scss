@@ -8,3 +8,9 @@ html,
 body {
     height: 100%;
 }
+
+input,
+select {
+    width: 100%;
+    @include box-sizing(border-box);
+}

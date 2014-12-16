@@ -1,0 +1,16 @@
+.flowers {
+    max-width: 300;
+    margin: 0 auto;
+
+    text-align: justify;
+    font-size: 0;
+
+    &:after {
+        content: '';
+        width: 100%;
+    }
+}
+
+.flower {
+    display: inline-block;
+}
