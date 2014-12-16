@@ -6,7 +6,7 @@ var Router = Ember.Router.extend({
 })
 
 Router.map(function() {
-    this.route('new')
+    this.route('new', {path: '/'})
     this.route('view', {path: 'view/:logo_id'})
     this.route('logo', {path: '/:logo_id'})
 })
