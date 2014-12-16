@@ -5,7 +5,7 @@
     </article>
     <article class="widget">
         <label class="widget-label" for="">Choose a font:</label>
-        {{view 'select' content=inventory.fonts
+        {{view 'select' content=globalChoices.fonts
                         value=font
                         optionLabelPath="content.title"
                         optionValuePath="content.id"}}
@@ -14,7 +14,7 @@
         <span class="widget-label" for="">Choose up to 3 flowers:</span>
         <div class="box box--scroll">
             <div class="grid grid--three grid--lines">
-                {{#each flower in inventory.flowers}}                                     
+                {{#each flower in globalChoices.flowers}}                                     
                 <div class="grid-item"><button class="btn btn--image btn--highlight" {{action 'toggleFlower' flower}} {{bind-attr class=flower.selected}}><img {{bind-attr src=flower.location}}></button></div>
                 {{/each}}
                 <div class="gap"></div>
@@ -28,7 +28,7 @@
         <span class="widget-label">Choose a color palette</span>
         <div class="box">
             <div class="grid grid--three">
-                {{#each palette in inventory.palettes}}
+                {{#each palette in globalChoices.palettes}}
                     {{palette-box palette=palette setPalette='setPalette'}}
                 {{/each}}
                 <div class="gap"></div>

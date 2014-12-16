@@ -1,7 +1,7 @@
 $base: 30;
 
 @function rems($size) {
-    @return 16 / $size * 1rem;
+    @return $size / 16 * 1rem;
 }
 
 $offwhite: #f1f1f1;

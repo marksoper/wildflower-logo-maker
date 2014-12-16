@@ -3,21 +3,15 @@ import Ember from 'ember';
 export default Ember.ObjectController.extend({
     needs: ['application'],
 
-    inventory: function() {
-        var inventory = this.get('controllers.application').get('model'),
-            palette = inventory.palettes.findBy('id', this.get('palette').id),
-            arrangement = inventory.arrangements.findBy('id', this.get('arrangement').id),
-            font = inventory.fonts.findBy('id', this.get('font').id)
-
-        if ( palette ) { palette.set('selected', true) }
-        if ( arrangement ) { arrangement.set('selected', true) }
-        if ( font ) { font.set('selected', true) }
+    globalChoices: function() {
+        var inventory = this.get('controllers.application').get('model')
+            //palettes = inventory.palettes
 
         return inventory
     }.property('controllers.application'),
 
     flowerObjects: function() {
-        var allFlowers = this.get('inventory.flowers'),
+        var allFlowers = this.get('globalChoices.flowers'),
             flowerIds = this.get('flowerIds')
 
         allFlowers.forEach(function(flower) {
@@ -29,14 +23,13 @@ export default Ember.ObjectController.extend({
             f.set('selected', true)
             return f
         })
-    }.property('flowerIds.[]', 'inventory.flowers.[]'),
+    }.property('flowerIds.[]', 'globalChoices.flowers.[]'),
 
     letterList : function() {
         var letters = this.get('name').split(''),
-            colors = this.get('palette'),
+            colors = this.get('palette') || [],
             colorsCount = colors.length
 
-                debugger;
         return letters.map(function(letter, index) {
             return {
                 letter: letter,
@@ -47,7 +40,7 @@ export default Ember.ObjectController.extend({
 
     subtitle: function() {
         var subtitle = ('Montessori School').split(''),
-            colors = this.get('palette'),
+            colors = this.get('palette') || [],
             colorsCount = colors.length
 
         if ( !this.get('name') ) {
@@ -77,9 +70,9 @@ export default Ember.ObjectController.extend({
         },
 
         setPalette: function(palette) {
-            this.set('palette', palette)
+            this.set('palette', palette.get('colors'))
 
-            this.get('inventory.palettes').forEach(function(palette) {
+            this.get('globalChoices.palettes').forEach(function(palette) {
                 palette.set('selected', false)
             })
             palette.set('selected', true)

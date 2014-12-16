@@ -8,9 +8,8 @@ export default Ember.Route.extend({
         return Ember.Object.create({
             flowerIds: [],
             name: '',
-            palette: { id: 2 },
-            arrangement: {},
-            font: {}
+            arrangementId: undefined,
+            fontId: undefined
         })
     },
     setupController: function(controller, model) {
