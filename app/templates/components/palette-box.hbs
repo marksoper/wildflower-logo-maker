@@ -1,0 +1,7 @@
+<button class="btn btn--highlight" {{bind-attr class=palette.selected}} {{action 'setPalette' palette}}>
+    <div class="palette">
+    {{#each color in palette.colors}}
+        <span {{bind-attr class="isBigPalette:six-color:two-color"}}>
+    {{/each}}
+    </div>
+</button>
