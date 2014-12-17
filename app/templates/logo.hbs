@@ -55,19 +55,17 @@
 </section>
 <!-- .l-sidebar -->
 
-<main class="l-content" id="content">
+<main class="l-content" id="content">        
     <div class="logo" id="logo">
         <div class="flowers">
         {{#each flower in flowerObjects}}
             <img class="flower" {{bind-attr src=flower.location}} alt="" />
         {{/each}}
         </div>
-        <div class="title-box">
-            <div class="title">
-            {{#each l in letterList}}<span {{bind-attr style=l.colorStyle}}>{{l.letter}}</span>{{/each}}
-            </div>
-            <div class="subtitle">
-            {{#each l in subtitle}}<span {{bind-attr style=l.colorStyle}}>{{l.letter}}</span>{{/each}}
+        <div {{bind-attr class=":title-box font.className"}}>
+            {{letter-split text=name palette=palette class='title'}}
+            <div {{bind-attr class=":title-hide name::hide"}}>
+            {{letter-split text='Montessori School' palette=palette class='subtitle'}}
             </div>
         </div>
     </div>
