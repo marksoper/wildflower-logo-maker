@@ -5,24 +5,31 @@ export default Ember.Route.extend({
         return {
             flowers : (function() {
                 var f = []
-                for (var i = 1; i < 9; i++) {
+                for (var i = 1; i < 21; i++) {
                     f.push( Ember.Object.create({
-                        location: '/assets/img/flower' + i + '.jpeg',
+                        location: '/assets/img/flower' + i + '.png',
                         selected: false,
                         id: i
                     }) )
                 }
                 return f
             })(),
-            fonts: [{
-                title: "Wild Child",
+            fonts: [Ember.Object.create({
+                name: "Georgia",
+                className: "georgia",
                 selected: false,
                 id: 1
-                },{
-                title: "Helvetica",
+            }),Ember.Object.create({
+                name: "Helvetica",
+                className: "helvetica",
                 selected: false,
                 id: 2
-            }],
+            }),Ember.Object.create({
+                name: "Times New Roman",
+                className: "times",
+                selected: false,
+                id: 3
+            })],
             palettes : [Ember.Object.create({
                 id: 1,
                 selected: false,

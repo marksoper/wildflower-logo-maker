@@ -1,11 +1,18 @@
+/*global html2canvas,$*/
 import Ember from 'ember';
 
 export default Ember.ObjectController.extend({
     needs: ['application'],
 
     globalChoices: function() {
-        var inventory = this.get('controllers.application').get('model')
-            //palettes = inventory.palettes
+        var inventory = this.get('controllers.application').get('model'),
+            palette = inventory.palettes.findBy('id', this.get('palette').id),
+            arrangement = inventory.arrangements.findBy('id', this.get('arrangement').id),
+            font = inventory.fonts.findBy('id', this.get('font').id)
+
+        if ( palette ) { palette.set('selected', true) }
+        if ( arrangement ) { arrangement.set('selected', true) }
+        if ( font ) { font.set('selected', true) }
 
         return inventory
     }.property('controllers.application'),
@@ -27,7 +34,7 @@ export default Ember.ObjectController.extend({
 
     letterList : function() {
         var letters = this.get('name').split(''),
-            colors = this.get('palette') || [],
+            colors = this.get('palette').colors,
             colorsCount = colors.length
 
         return letters.map(function(letter, index) {
@@ -40,7 +47,7 @@ export default Ember.ObjectController.extend({
 
     subtitle: function() {
         var subtitle = ('Montessori School').split(''),
-            colors = this.get('palette') || [],
+            colors = this.get('palette').colors,
             colorsCount = colors.length
 
         if ( !this.get('name') ) {
@@ -56,6 +63,15 @@ export default Ember.ObjectController.extend({
     }.property('palette', 'name'),
 
     actions: {
+        saveFlower: function() {
+            html2canvas($('#logo').get(0), {
+                onrendered: function(canvas) {
+                    this.set('stringified', canvas.toDataURL())
+                   setTimeout(function() {$('#download').get(0).click()}, 0)
+                }.bind(this)
+            })
+        },
+
         toggleFlower: function(flower) {
             var ids = this.get('flowerIds')
           if (ids.length < 3 || flower.get('selected')) {
@@ -70,7 +86,7 @@ export default Ember.ObjectController.extend({
         },
 
         setPalette: function(palette) {
-            this.set('palette', palette.get('colors'))
+            this.set('palette', palette)
 
             this.get('globalChoices.palettes').forEach(function(palette) {
                 palette.set('selected', false)
