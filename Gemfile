@@ -1,3 +1,3 @@
 source 'https://rubygems.org'
 gem 'compass'
-gem 'normalize'
+gem 'compass-normalize'
