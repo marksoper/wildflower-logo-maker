@@ -16,12 +16,14 @@ module.exports = function(app) {
     res.send({
       "logos": {
         "id": req.params.id,
-        "title": "school #" + req.params.id,
-        "font": "font_id",
-        "flowers": [1,2,3],
-        "palette": "palette_id",
-        "arrangement": "arrangement_string",
-        "stringified": "stringified_from_fabricjs"
+        "name": "school #" + req.params.id,
+        "font": 2,
+        "flowerIds": [1,2,3],
+        "palette": { id: 3, colors: [
+            "#e5b113"
+            , "#e57613"
+        ]},
+        "arrangement": { id: 2, className: 'bottom' }
       }
     });
   });
