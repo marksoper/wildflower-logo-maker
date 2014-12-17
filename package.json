@@ -6,11 +6,6 @@
     "doc": "doc",
     "test": "tests"
   },
-  "scripts": {
-    "start": "ember server",
-    "build": "ember build",
-    "test": "ember test"
-  },
   "repository": "",
   "engines": {
     "node": ">= 0.10.0"
