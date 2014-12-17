@@ -44,19 +44,12 @@
 
     .small & {
         max-height: 25px;
+        margin: 0;
     }
 }
 
 .logo-textbox {
     text-align: center;
-
-    font-size: 55px;
-    font-size: rems(55);
-
-    .small & {
-        font-size: 8px;
-        font-size: rems(8);
-    }
 
     &.times {
         font-family: "Times New Roman";
@@ -81,12 +74,41 @@
 
 .logo-title,
 .logo-subtitle {
-    // display: flex;
-    // justify-content: space-between;
+    @include transition(font-size 250ms ease);
+    line-height: 1;
+
 
     // .small & {
     //     display: block;
     // }
+}
+
+.logo-title {
+    font-size: 120px;
+    font-size: rems(120);
+    display: flex;
+    justify-content: space-between;
+
+    > span {
+        min-width: 15px;
+    }
+
+    .small & {
+        font-size: 8px;
+        font-size: rems(8);
+
+        > span {
+            min-width: 3px;
+        }
+    }
+}
+.logo-subtitle {
+    font-size: 35px;
+    font-size: rems(35);
+    .small & {
+        font-size: 6px;
+        font-size: rems(6);
+    }
 }
 
 .logo-subtitle > span {

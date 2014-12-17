@@ -29,11 +29,11 @@
     border: 49.49747468305833px solid transparent;
 
     &:nth-child(1) {
-        @include transform(rotate(-45deg) translateY(-70px));
+        @include transform(rotate(-45deg) translateY(-69px));
     }
 
     &:nth-child(2) {
-        @include transform(translateY(40px) rotate(-45deg) translateX(29px));
+        @include transform(rotate(-45deg) translateY(29px));
     }
 }
 

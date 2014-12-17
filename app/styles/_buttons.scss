@@ -10,12 +10,19 @@
 }
 
 .btn--highlight {
+    display: block;
     width: 100%;
     border: 5px solid transparent;
 
     &.selected {
         border-image: url(/assets/img/btn-border.jpg) 5 5 round;
     }
+}
+
+.btn--square {
+    @include box-sizing(content-box);
+    width: 70px;
+    height: 70px;
 }
 
 .btn--image {
