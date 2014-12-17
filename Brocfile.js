@@ -21,7 +21,6 @@ var app = new EmberApp({
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 
-app.import('bower_components/fabric/dist/fabric.js')
 app.import('bower_components/html2canvas/build/html2canvas.js')
 
 module.exports = app.toTree();
