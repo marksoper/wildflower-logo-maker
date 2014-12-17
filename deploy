@@ -1,0 +1,2 @@
+#!/bin/sh
+s3put -b wf-logomaker -p `pwd -P`/dist dist
