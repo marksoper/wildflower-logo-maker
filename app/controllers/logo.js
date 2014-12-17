@@ -32,36 +32,6 @@ export default Ember.ObjectController.extend({
         })
     }.property('flowerIds.[]', 'globalChoices.flowers.[]'),
 
-    letterList : function() {
-        var letters = this.get('name').split(''),
-            colors = this.get('palette').colors,
-            colorsCount = colors.length
-
-        return letters.map(function(letter, index) {
-            return {
-                letter: letter,
-                colorStyle: 'color: ' + colors[index%colorsCount] + ';'
-            }
-        })
-    }.property('palette', 'name'),
-
-    subtitle: function() {
-        var subtitle = ('Montessori School').split(''),
-            colors = this.get('palette').colors,
-            colorsCount = colors.length
-
-        if ( !this.get('name') ) {
-            return ''
-        } else {
-            return subtitle.map(function(letter, index) {
-                return {
-                    letter: letter,
-                    colorStyle: 'color: ' + colors[index%colorsCount] + ';'
-                }
-            })
-        }
-    }.property('palette', 'name'),
-
     actions: {
         saveFlower: function() {
             html2canvas($('#logo').get(0), {
