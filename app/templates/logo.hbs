@@ -15,7 +15,9 @@
         <div class="box box--scroll">
             <div class="grid grid--three grid--lines">
                 {{#each flower in inventory.flowers}}                                     
-                <div class="grid-item"><button class="btn btn--image btn--highlight" {{action 'toggleFlower' flower}} {{bind-attr class=flower.selected}}><img {{bind-attr src=flower.location}}></button></div>
+                <div class="grid-item">
+                    <button {{action 'toggleFlower' flower}} {{bind-attr class=":btn :btn--image flower.selected"}}><img {{bind-attr src=flower.location}}></button>
+                </div>
                 {{/each}}
                 <div class="gap"></div>
             </div>
@@ -42,9 +44,19 @@
         <span class="widget-label">Choose an arrangement</span>
         <div class="box">
             <div class="grid grid--two">
-                {{#each a in inventory.arrangements}}
-                <div class="grid-item"><button {{bind-attr class=":btn :btn--highlight a.selected"}} {{action 'setArrangement' a}}>{{a.className}}</button></div>
-                {{/each}}
+            {{#each a in inventory.arrangements}}
+                <div class="grid-item">
+                    <button {{bind-attr class=":btn :btn--highlight a.selected"}} {{action 'setArrangement' a}}>
+                        {{logo-view 
+                            size='small'
+                            arrangement=a.className
+                            flowerObjects=flowerObjects
+                            selectedFont=selectedFont
+                            name=name
+                            palette=palette}}
+                    </button>
+                </div>
+            {{/each}}
             </div>
             <!-- .grid -->
         </div>
@@ -55,18 +67,11 @@
 <!-- .l-sidebar -->
 
 <main class="l-content" id="content">        
-    <div {{bind-attr class=":logo arrangement.className"}} id="logo">
-        <div class="logo-images">
-        {{#each flower in flowerObjects}}
-            <img class="logo-image" {{bind-attr src=flower.location}} alt="" />
-        {{/each}}
-        </div>
-        <div {{bind-attr class=":logo-textbox selectedFont.className"}}>
-            {{letter-split text=name palette=palette class='logo-title'}}
-            <div {{bind-attr class=":logo-hide name::hide"}}>
-            {{letter-split text='Montessori School' palette=palette class='logo-subtitle'}}
-            </div>
-        </div>
-    </div>
+    {{logo-view 
+        arrangement=arrangement.className
+        flowerObjects=flowerObjects
+        selectedFont=selectedFont
+        name=name
+        palette=palette}}
 </main>
 <!-- .l-content -->

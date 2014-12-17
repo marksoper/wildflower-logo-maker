@@ -17,3 +17,13 @@
         border-image: url(/assets/img/btn-border.jpg) 5 5 round;
     }
 }
+
+.btn--image {
+    @extend .btn--highlight;
+
+    padding: 10px;
+
+    > img {
+        max-height: 65px;
+    }
+}

@@ -1,10 +1,9 @@
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-    title: DS.attr(),
+    name: DS.attr(),
     font: DS.attr(),
-    flowers: DS.attr(),
+    flowerIds: DS.attr(),
     palette: DS.attr(),
-    arrangement: DS.attr(),
-    stringified: DS.attr()
+    arrangement: DS.attr()
 });

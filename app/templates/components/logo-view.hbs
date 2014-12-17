@@ -1,0 +1,11 @@
+<div class="logo-images">
+{{#each flower in flowerObjects}}
+    <div><img class="logo-image" {{bind-attr src=flower.location}} alt="" /></div>
+{{/each}}
+</div>
+<div {{bind-attr class=":logo-textbox selectedFont.className"}}>
+    {{letter-split text=name palette=palette class='logo-title'}}
+    <div {{bind-attr class=":logo-hide name::hide"}}>
+    {{letter-split text='Montessori School' palette=palette class='logo-subtitle'}}
+    </div>
+</div>

@@ -5,6 +5,7 @@
     margin: 0 auto;
     text-align: justify;
     font-size: 0;
+    overflow: hidden;
 
     &:after {
         content: '';

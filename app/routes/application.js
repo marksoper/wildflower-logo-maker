@@ -8,7 +8,6 @@ export default Ember.Route.extend({
                 for (var i = 1; i < 21; i++) {
                     f.push( Ember.Object.create({
                         location: '/assets/img/flower' + i + '.png',
-                        selected: false,
                         id: i
                     }) )
                 }
@@ -17,35 +16,40 @@ export default Ember.Route.extend({
             fonts: [Ember.Object.create({
                 name: "Georgia",
                 className: "georgia",
-                selected: false,
                 id: 1
             }),Ember.Object.create({
                 name: "Helvetica",
                 className: "helvetica",
-                selected: false,
                 id: 2
             }),Ember.Object.create({
                 name: "Times New Roman",
                 className: "times",
-                selected: false,
                 id: 3
             })],
             palettes : [Ember.Object.create({
                 id: 1,
-                selected: false,
-                colors: ["#9D5F8F", "#74B48C"]
+                colors: ["#1ab6f5", "#1a86f5"]
             }), Ember.Object.create({
                 id: 2,
-                selected: false,
-                colors: ["#88C8C0","#6CD476"]
+                colors: ["#079d66","#73c412"]
             }), Ember.Object.create({
                 id: 3,
-                selected: false,
-                colors: ["#6BA056","#7DC5FD","#019897","#7DFCAC","#4AAF17","#E2F0AF"]
+                colors: ["#e5b113","#e57613"]
             }), Ember.Object.create({
                 id: 4,
-                selected: false,
-                colors: ["#EBD0D1","#FD46CD","#F4417F","#C5BBF8","#B88A76","#ADB2E0"]
+                colors: ["#4f03fc","#893cfd"]
+            }), Ember.Object.create({
+                id: 5,
+                colors: ["#bb6de1","#9f37b5"]
+            }), Ember.Object.create({
+                id: 6,
+                colors: ['#ff3c00', '#e5b113', '#e57613', '#cb0ab2', '#c0b405', '#7cc005']
+            }), Ember.Object.create({
+                id: 7,
+                colors: ['#079d66', '#73c412', '#e5b113', '#e57613', '#fc5c05', '#c0b405']
+            }), Ember.Object.create({
+                id: 8,
+                colors: ['#bb6de1', '#c91153', '#cb0ab2', '#6363f3', '#3093f8', '#044ed5']
             })],
             arrangements: [Ember.Object.create({
                 id: 1,
