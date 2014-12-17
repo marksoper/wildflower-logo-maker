@@ -14,6 +14,7 @@
     "ember-qunit-notifications": "0.0.4",
     "qunit": "~1.15.0",
     "fabric": "~1.4.13",
-    "html2canvas": "~0.4.1"
+    "html2canvas": "~0.4.1",
+    "bigtext": "~0.1.6"
   }
 }
