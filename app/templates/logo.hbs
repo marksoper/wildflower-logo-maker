@@ -5,16 +5,16 @@
     </article>
     <article class="widget">
         <label class="widget-label" for="">Choose a font:</label>
-        {{view 'select' content=globalChoices.fonts
+        {{view 'select' content=inventory.fonts
                         value=font
-                        optionLabelPath="content.title"
+                        optionLabelPath="content.name"
                         optionValuePath="content.id"}}
     </article>
     <article class="widget">
         <span class="widget-label" for="">Choose up to 3 flowers:</span>
         <div class="box box--scroll">
             <div class="grid grid--three grid--lines">
-                {{#each flower in globalChoices.flowers}}                                     
+                {{#each flower in inventory.flowers}}                                     
                 <div class="grid-item"><button class="btn btn--image btn--highlight" {{action 'toggleFlower' flower}} {{bind-attr class=flower.selected}}><img {{bind-attr src=flower.location}}></button></div>
                 {{/each}}
                 <div class="gap"></div>
@@ -28,7 +28,7 @@
         <span class="widget-label">Choose a color palette</span>
         <div class="box">
             <div class="grid grid--three">
-                {{#each palette in globalChoices.palettes}}
+                {{#each palette in inventory.palettes}}
                     {{palette-box palette=palette setPalette='setPalette'}}
                 {{/each}}
                 <div class="gap"></div>
@@ -42,10 +42,9 @@
         <span class="widget-label">Choose an arrangement</span>
         <div class="box">
             <div class="grid grid--two">
-                <div class="grid-item"><button class="btn btn--highlight"></button></div>
-                <div class="grid-item"><button class="btn btn--highlight"></button></div>
-                <div class="grid-item"><button class="btn btn--highlight"></button></div>
-                <div class="grid-item"><button class="btn btn--highlight"></button></div>
+                {{#each a in inventory.arrangements}}
+                <div class="grid-item"><button {{bind-attr class=":btn :btn--highlight a.selected"}} {{action 'setArrangement' a}}>{{a.className}}</button></div>
+                {{/each}}
             </div>
             <!-- .grid -->
         </div>
@@ -56,16 +55,16 @@
 <!-- .l-sidebar -->
 
 <main class="l-content" id="content">        
-    <div class="logo" id="logo">
-        <div class="flowers">
+    <div {{bind-attr class=":logo arrangement.className"}} id="logo">
+        <div class="logo-images">
         {{#each flower in flowerObjects}}
-            <img class="flower" {{bind-attr src=flower.location}} alt="" />
+            <img class="logo-image" {{bind-attr src=flower.location}} alt="" />
         {{/each}}
         </div>
-        <div {{bind-attr class=":title-box font.className"}}>
-            {{letter-split text=name palette=palette class='title'}}
-            <div {{bind-attr class=":title-hide name::hide"}}>
-            {{letter-split text='Montessori School' palette=palette class='subtitle'}}
+        <div {{bind-attr class=":logo-textbox selectedFont.className"}}>
+            {{letter-split text=name palette=palette class='logo-title'}}
+            <div {{bind-attr class=":logo-hide name::hide"}}>
+            {{letter-split text='Montessori School' palette=palette class='logo-subtitle'}}
             </div>
         </div>
     </div>

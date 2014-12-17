@@ -8,8 +8,8 @@ export default Ember.Route.extend({
         return Ember.Object.create({
             flowerIds: [],
             name: '',
-            arrangement: { id: null, name: null },
-            font: { id: 3, name: "Times New Roman" },
+            arrangement: { id: null, className: null },
+            font: null,
             palette: { id: null, colors: [] }
         })
     },

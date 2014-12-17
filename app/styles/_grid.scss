@@ -25,6 +25,8 @@
 }
 
 .grid-item {
+    font-size: 16px;
+    font-size: rems(16);
     text-align: center;
     border-right: 1px $offwhite solid;
     border-bottom: 1px $offwhite solid;

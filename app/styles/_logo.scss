@@ -2,4 +2,80 @@
     margin: auto;
     width: 100%;
     max-width: 500px;
+
+    &.top {
+    }
+
+    &.left,
+    &.right,
+    &.bottom {
+        max-width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        .logo-image {
+            margin: 0 5px;
+        }
+
+    }
+
+    &.right {
+        > .logo-images {
+            order: 1;
+        }
+    }
+
+    &.bottom {
+        flex-direction: column;
+        > .logo-images {
+            order: 1;
+        }
+    }
+}
+
+.logo-images {
+    display: flex;
+    justify-content: center;
+}
+
+.logo-image {
+    margin: 0 15px;
+}
+
+.logo-textbox {
+    text-align: center;
+
+    font-size: 55px;
+    font-size: rems(55);
+
+    &.times {
+        font-family: "Times New Roman";
+    }
+
+    &.georgia {
+        font-family: "Georgia";
+    }
+
+    &.helvetica {
+        font-family: "Helvetica";
+    }
+}
+
+.logo-hide {
+    @include transition(opacity 250ms ease);
+
+    &.hide {
+        opacity: 0;
+    }
+}
+
+.logo-title,
+.logo-subtitle {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo-subtitle > span {
+    min-width: 15px;
 }

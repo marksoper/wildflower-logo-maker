@@ -49,16 +49,16 @@ export default Ember.Route.extend({
             })],
             arrangements: [Ember.Object.create({
                 id: 1,
-                name: 'top'
+                className: 'top'
             }), Ember.Object.create({
                 id: 2,
-                name: 'bottom'
+                className: 'bottom'
             }), Ember.Object.create({
                 id: 3,
-                name: 'left'
+                className: 'left'
             }), Ember.Object.create({
                 id: 4,
-                name: 'right'
+                className: 'right'
             })]
         }
     }

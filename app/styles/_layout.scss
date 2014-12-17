@@ -8,6 +8,7 @@
 .l-sidebar {
     padding: rems($base);
     width: 325px;
+    overflow-y: scroll;
 }
 
 .l-sidebar--highlight {
