@@ -3,6 +3,26 @@
 
     font-size: 55px;
     font-size: rems(55);
+
+    &.times {
+        font-family: "Times New Roman";
+    }
+
+    &.georgia {
+        font-family: "Georgia";
+    }
+
+    &.helvetica {
+        font-family: "Helvetica";
+    }
+}
+
+.title-hide {
+    @include transition(opacity 250ms ease);
+
+    &.hide {
+        opacity: 0;
+    }
 }
 
 .title,
