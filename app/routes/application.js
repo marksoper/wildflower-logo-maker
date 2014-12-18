@@ -1,5 +1,30 @@
 import Ember from "ember";
 
+var fonts = [{
+    name: 'Georgia',
+    className: 'georgia'
+}, {
+    name: 'Helvetica',
+    className: 'helvetica'
+}, {
+    name: 'Times New Roman',
+    className: 'times'
+}, {
+    name: 'Avenir',
+    className: 'avenir'
+}, {
+    name: 'Kim1',
+    className: 'kim1'
+}, {
+    name: 'Kim2',
+    className: 'kim2'
+}, {
+    name: 'Sep',
+    className: 'sep'
+}, {
+    name: 'Wildchild',
+    className: 'wildchild'
+}]
 export default Ember.Route.extend({
     model: function() {
         return {
@@ -13,19 +38,14 @@ export default Ember.Route.extend({
                 }
                 return f
             })(),
-            fonts: [Ember.Object.create({
-                name: "Georgia",
-                className: "georgia",
-                id: 1
-            }),Ember.Object.create({
-                name: "Helvetica",
-                className: "helvetica",
-                id: 2
-            }),Ember.Object.create({
-                name: "Times New Roman",
-                className: "times",
-                id: 3
-            })],
+            fonts: (() => {
+                var f = []
+                for (var i = 0; i < fonts.length; i++) {
+                    fonts[i].id = i+1
+                    f.push( Ember.Object.create(fonts[i]) )
+                }
+                return f
+            })(),
             palettes : [Ember.Object.create({
                 id: 1,
                 colors: ["#1ab6f5", "#1a86f5"]
