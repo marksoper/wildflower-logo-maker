@@ -1,7 +1,10 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-    id: 'logo',
     classNames: ['logo'],
-    classNameBindings: ['arrangement', 'size']
+    classNameBindings: ['arrangement', 'size'],
+    attributeBindings: ['main:id'],
+    main: function() {
+        return this.get('view') === 'main' ? 'logo' : ''
+    }.property('view')
 })

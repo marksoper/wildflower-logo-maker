@@ -1,6 +1,6 @@
 .grid {
     font-size: 0;
-    text-align: center;
+    text-align: justify;
 
     &:after {
         content: '';
@@ -13,7 +13,7 @@
     .grid-item,
     .gap {
         display: inline-block;
-        width: (100%/3.1);
+        width: (100%/3);
     }
 
     .grid-item:nth-child(3n) {
@@ -29,7 +29,7 @@
     .grid-item,
     .gap {
         display: inline-block;
-        width: (100%/2.1);
+        width: (100%/2);
         vertical-align: top;
     }
 

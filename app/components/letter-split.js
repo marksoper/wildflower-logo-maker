@@ -16,7 +16,7 @@ export default Ember.Component.extend({
         }
 
         var letterCount = this.get('text').length,
-            sizeRange = [48, 123],
+            sizeRange = [48, 110],
             countRange = [5, 13],
             size
 

@@ -40,8 +40,6 @@
 }
 
 .logo-image {
-    margin: 0 5px;
-
     .small & {
         max-height: 25px;
         margin: 0;
@@ -50,18 +48,6 @@
 
 .logo-textbox {
     text-align: center;
-
-    &.times {
-        font-family: "Times New Roman";
-    }
-
-    &.georgia {
-        font-family: "Georgia";
-    }
-
-    &.helvetica {
-        font-family: "Helvetica";
-    }
 }
 
 .logo-hide {
@@ -76,11 +62,6 @@
 .logo-subtitle {
     @include transition(font-size 250ms ease);
     line-height: 1;
-
-
-    // .small & {
-    //     display: block;
-    // }
 }
 
 .logo-title {

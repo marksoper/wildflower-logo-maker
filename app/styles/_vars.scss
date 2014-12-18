@@ -1,11 +1,13 @@
-$base: 30;
-
 @function rems($size) {
     @return $size / 16 * 1rem;
 }
+
+$base: 30;
+$spacing: rems($base/2);
 
 $offwhite: #f1f1f1;
 $lightestgray: #eaeaea;
 $lightergray: #c4c4c4;
 $lightgray: #a6a6a6;
+$gray: #666;
 $darkgray: #333;

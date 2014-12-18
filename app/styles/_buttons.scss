@@ -34,3 +34,63 @@
         max-height: 65px;
     }
 }
+
+.btn--download {
+    position: relative;
+    display: block;
+    padding: 15px 45px 15px 15px;
+    border-radius: 5px;
+    background-color: #94cf5d;
+    color: $darkgray;
+    @include transition(color 150ms, background-color 150ms);
+
+    &:hover {
+        color: #94cf5d;
+        background-color: $darkgray;
+    }
+}
+
+.btn-icon {
+    display: block;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    top: 0;
+    right: 15px;
+    bottom: 0;
+    margin: auto;
+
+    &:before,
+    &:after {
+        position: absolute;
+        left: 0;
+        width: 1px;
+        height: 75%;
+        background: #fff;
+        content: '';
+        -webkit-transition: -webkit-transform 0.3s, background-color 0.3s;
+        transition: transform 0.3s, background-color 0.3s;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+
+    &:before {
+        @include transform(translateY(3px) translateX(10px) rotate(-30deg));
+        @include transform-origin(0, 100%);
+    }
+
+    &:after {
+        @include transform(translateY(2px) translateX(10px) rotate(30deg));
+        @include transform-origin(0, 100%);
+    }
+
+    .btn--download:hover & {
+        &:before {
+            @include transform(translateY(3px) translateX(10px) rotate(-20deg));
+        }
+
+        &:after {
+            @include transform(translateY(2px) translateX(10px) rotate(20deg));
+        }
+    }
+}

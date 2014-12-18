@@ -1,0 +1,8 @@
+<span {{bind-attr class=":dropdown-label selectedFont.className"}}>{{selectedFont.name}}</span>
+<ul class="dropdown-list">
+{{#each f in fonts}}
+    <li class="dropdown-item" {{action 'selectFont' f}}>
+        <button {{bind-attr class=":dropdown-option f.className"}}>{{f.name}}</button>
+    </li>
+{{/each}}
+</ul>

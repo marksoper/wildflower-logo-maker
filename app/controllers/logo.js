@@ -37,10 +37,10 @@ export default Ember.ObjectController.extend({
     actions: {
         saveFlower: function() {
             html2canvas($('#logo').get(0), {
-                onrendered: function(canvas) {
-                    this.set('stringified', canvas.toDataURL())
-                   setTimeout(function() {$('#download').get(0).click()}, 0)
-                }.bind(this)
+                onrendered: (canvas) => {
+                    this.set('dataurl', canvas.toDataURL())
+                    setTimeout(() => $('#download').get(0).click(), 0)
+                }
             })
         },
 
@@ -74,6 +74,10 @@ export default Ember.ObjectController.extend({
             })
 
             a.set('selected', true)
+        },
+
+        setFont: function(font) {
+            this.set('font', font.id)
         }
     }
 })

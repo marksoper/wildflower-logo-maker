@@ -1,14 +1,16 @@
 <section class="l-sidebar l-sidebar--highlight">
     <article class="widget">
         <label class="widget-label" for="">Enter your school name:</label>
-        {{input class='widget-label' type='text' value=name}}
+        {{input class='widget-input' type='text' value=name}}
     </article>
     <article class="widget">
         <label class="widget-label" for="">Choose a font:</label>
-        {{view 'select' content=inventory.fonts
-                        value=font
-                        optionLabelPath="content.name"
-                        optionValuePath="content.id"}}
+        <div class="box box--flush">
+            {{font-dropdown 
+                fonts=inventory.fonts 
+                selectedFont=selectedFont
+                action='setFont'}}
+        </div>
     </article>
     <article class="widget">
         <span class="widget-label" for="">Choose up to 3 flowers:</span>
@@ -27,7 +29,7 @@
     </article>
     <!-- .widget -->
     <article class="widget">
-        <span class="widget-label">Choose a color palette</span>
+        <span class="widget-label">Choose a color palette:</span>
         <div class="box">
             <div class="grid grid--three">
                 {{#each palette in inventory.palettes}}
@@ -41,7 +43,7 @@
     </article>
     <!-- .widget -->
     <article class="widget">
-        <span class="widget-label">Choose an arrangement</span>
+        <span class="widget-label">Choose an arrangement:</span>
         <div class="box">
             <div class="grid grid--two">
             {{#each a in inventory.arrangements}}
@@ -68,10 +70,16 @@
 
 <main class="l-content" id="content">        
     {{logo-view 
+        view='main'
         arrangement=arrangement.className
         flowerObjects=flowerObjects
         selectedFont=selectedFont
         name=name
         palette=palette}}
+
+    <div class="l-lowerright">
+        <button class="btn btn--download" {{action 'saveFlower'}}>Download <div class="btn-icon"></div></button>
+        <a id="download" {{bind-attr href=dataurl download=name}}></a>
+    </div>
 </main>
 <!-- .l-content -->
