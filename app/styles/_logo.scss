@@ -1,12 +1,5 @@
 .logo {
     margin: auto;
-    width: 100%;
-    max-width: 300px;
-
-    &.small {
-        height: 70px;
-    }
-
 
     &.left,
     &.right,
@@ -18,20 +11,32 @@
         align-items: center;
     }
 
+    &.top,
+    &.bottom {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    &.left,
     &.right {
+        align-items: flex-end;
+
+        .logo-textbox {
+            margin: 0;
+        }
+    }
+
+    &.right,
+    &.bottom {
         > .logo-images {
             order: 1;
         }
     }
+}
 
-    &.top,
-    &.bottom {
-        flex-direction: column;
-    }
-
-    &.bottom > .logo-images {
-        order: 1;
-    }
+.logo--small {
+    height: 70px;
+    display: flex;
 }
 
 .logo-images {
@@ -40,7 +45,7 @@
 }
 
 .logo-image {
-    .small & {
+    .logo--small & {
         max-height: 25px;
         margin: 0;
     }
@@ -48,6 +53,8 @@
 
 .logo-textbox {
     text-align: center;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .logo-hide {
@@ -74,7 +81,7 @@
         min-width: 15px;
     }
 
-    .small & {
+    .logo--small & {
         font-size: 8px;
         font-size: rems(8);
 
@@ -86,7 +93,7 @@
 .logo-subtitle {
     font-size: 35px;
     font-size: rems(35);
-    .small & {
+    .logo--small & {
         font-size: 6px;
         font-size: rems(6);
     }

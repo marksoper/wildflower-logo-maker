@@ -49,6 +49,7 @@
             {{#each a in inventory.arrangements}}
                 <div class="grid-item">
                     <button {{bind-attr class=":btn :btn--highlight a.selected"}} {{action 'setArrangement' a}}>
+                        <div class="logo--small">
                         {{logo-view 
                             size='small'
                             arrangement=a.className
@@ -56,6 +57,7 @@
                             selectedFont=selectedFont
                             name=name
                             palette=palette}}
+                        </div>
                     </button>
                 </div>
             {{/each}}
