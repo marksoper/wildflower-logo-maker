@@ -1,16 +1,12 @@
-/*global $*/
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-    didInsertElement: function() {
-        $(document).click(() => {
-            this.get('element').classList.remove('active')
-        })
-    },
     id: 'filter',
+    active: false,
     classNames: ['dropdown'],
+    classNameBindings: ['active'],
     click: function() {
-        this.get('element').classList.toggle('active')
+        this.set('active', !this.get('active'))
         return false
     },
     actions: {
