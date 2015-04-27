@@ -1,0 +1,87 @@
+<section class="l-sidebar l-sidebar--highlight">
+    <article class="widget">
+        <label class="widget-label" for="">Enter your school name:</label>
+        {{input class='widget-input' type='text' value=name}}
+    </article>
+    <article class="widget">
+        <label class="widget-label" for="">Choose a font:</label>
+        <div class="box box--flush">
+            {{font-dropdown 
+                fonts=inventory.fonts 
+                selectedFont=selectedFont
+                action='setFont'}}
+        </div>
+    </article>
+    <article class="widget">
+        <span class="widget-label" for="">Choose up to 3 flowers:</span>
+        <div class="box box--scroll">
+            <div class="grid grid--three grid--lines">
+                {{#each flower in inventory.flowers}}                                     
+                <div class="grid-item">
+                    <button {{action 'toggleFlower' flower}} {{bind-attr class=":btn :btn--image flower.selected"}}><img {{bind-attr src=flower.location}}></button>
+                </div>
+                {{/each}}
+                <div class="gap"></div>
+            </div>
+            <!-- .grid -->
+        </div>
+        <!-- .box -->
+    </article>
+    <!-- .widget -->
+    <article class="widget">
+        <span class="widget-label">Choose a color palette:</span>
+        <div class="box">
+            <div class="grid grid--three">
+                {{#each palette in inventory.palettes}}
+                    {{palette-box palette=palette setPalette='setPalette'}}
+                {{/each}}
+                <div class="gap"></div>
+            </div>
+            <!-- .grid -->
+        </div>
+        <!-- .box -->
+    </article>
+    <!-- .widget -->
+    <article class="widget">
+        <span class="widget-label">Choose an arrangement:</span>
+        <div class="box">
+            <div class="grid grid--two">
+            {{#each a in inventory.arrangements}}
+                <div class="grid-item">
+                    <button {{bind-attr class=":btn :btn--highlight a.selected"}} {{action 'setArrangement' a}}>
+                        <div class="logo--small">
+                        {{logo-view 
+                            size='small'
+                            arrangement=a.className
+                            flowerObjects=flowerObjects
+                            selectedFont=selectedFont
+                            name=name
+                            palette=palette}}
+                        </div>
+                    </button>
+                </div>
+            {{/each}}
+            </div>
+            <!-- .grid -->
+        </div>
+        <!-- .box -->
+    </article>
+    <!-- .widget -->
+</section>
+<!-- .l-sidebar -->
+
+<main class="l-content" id="content">        
+    {{logo-view 
+        view='main'
+        arrangement=arrangement.className
+        flowerObjects=flowerObjects
+        selectedFont=selectedFont
+        name=name
+        palette=palette}}
+
+    <div class="l-lowerright">
+        <button class="btn btn--download" {{action 'saveFlower'}}>Download <div class="btn-icon"></div></button>
+        <a id="download" {{bind-attr href=dataurl download=name}}></a>
+    </div>
+</main>
+<!-- .l-content -->

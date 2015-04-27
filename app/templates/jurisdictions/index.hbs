@@ -1,0 +1,29 @@
+
+
+
+  
+  <div class="header">
+    <h1>
+      Licensing
+    </h1>
+  </div>
+
+  <div class="step-by-step">
+    Step-by-step guide to regulatory requirements 
+  </div>
+
+
+  <div class="get-started">
+    Choose a state to get started
+  </div>
+
+  <div class="widget">
+    <div class="box box--flush dropdown">
+        {{jurisdiction-dropdown 
+            jurisdictions=model.jurisdictions 
+            selectedJurisdiction=model.selectedJurisdiction
+            action='setJurisdiction'}}
+    </div>
+  </div>
+
+

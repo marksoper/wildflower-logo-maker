@@ -1,0 +1,12 @@
+
+<span {{bind-attr class=":dropdown-label selectedJurisdiction.name"}}>
+  {{ selectedJurisdiction.name }}
+</span>
+
+<ul class="dropdown-list jurisdiction-dropdown">
+  {{#each j in jurisdictions}}
+      <li class="dropdown-item" {{action 'selectJurisdiction' j}}>
+          <button {{bind-attr class=":dropdown-option j.name"}}>{{j.name}}</button>
+      </li>
+  {{/each}}
+</ul>
