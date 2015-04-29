@@ -9,8 +9,9 @@ Router.map(function() {
   this.route('new', {path: '/'});
   this.route('view', {path: 'view/:logo_id'});
   this.route('logo', {path: '/:logo_id'});
-  this.resource('jurisdiction', { path: "licensing/:jurisdiction_id" }, function() {});
-  this.resource('jurisdictions', { path: "licensing/" }, function() {});
+  this.route('jurisdiction', { path: 'licensing' }, function() {
+      this.route('view', {path: ':jurisdiction_id'})
+  });
 })
 
 export default Router

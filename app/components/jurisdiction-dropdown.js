@@ -10,8 +10,8 @@ export default Ember.Component.extend({
     return false;
   },
   actions: {
-    selectJurisdiction: function(jurisdiction) {
-      this.sendAction('action', jurisdiction);
-    }
+      setJurisdiction: function(j) {
+          this.set('selectedJurisdiction', j)
+      }
   }
 });

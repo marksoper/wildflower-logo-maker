@@ -18,7 +18,7 @@ App = Ember.Application.extend({
 //
 // TODO: remove this for production
 //
-App.ApplicationAdapter = DS.FixtureAdapter;
+//App.ApplicationAdapter = DS.FixtureAdapter;
 
 loadInitializers(App, config.modulePrefix);
 
