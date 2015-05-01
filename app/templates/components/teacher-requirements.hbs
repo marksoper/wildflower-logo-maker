@@ -5,8 +5,16 @@
     <h2>Step 1: Teacher Requirements</h2>
   </div>
 
-  {{
-    student-age-dropdown
-  }}
+  <div class="box box--flush dropdown">
+    {{
+      student-age-dropdown
+      selectedStudentAge=selectedStudentAge
+      action = 'setStudentAge'
+    }}
+  </div>
+
+  <div class="teacher-requirements-output">
+    {{ requiredTeachers }}
+  </div>
 
 </div>

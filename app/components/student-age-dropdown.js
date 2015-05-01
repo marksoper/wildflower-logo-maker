@@ -10,8 +10,19 @@ export default Ember.Component.extend({
     return false;
   },
   actions: {
-      setStudentAge: function(j) {
-          this.set('selectedStudentAge', j)
+      selectStudentAge: function(j) {
+          this.set('selectedStudentAge', j);
+          this.sendAction('action', j)
       }
-  }
+  },
+  studentAgeRanges: [
+    {
+      id: "0-3",
+      value: "0-3"
+    },
+    {
+      id: "3-6",
+      value: "3-6"
+    }
+  ]
 });
