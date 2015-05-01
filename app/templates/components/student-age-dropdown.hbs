@@ -1,0 +1,15 @@
+
+
+<span class="dropdown-label">
+  {{selectedStudentAge.name}}
+</span>
+
+<ul class="dropdown-list student-age-dropdown">
+  {{#each ageRange in studentAgeRanges}}
+    <li class="dropdown-item" {{action 'setAgeRange' ageRange}}>
+      <div class="dropdown-option">
+        {{ ageRange.value }}
+      </div>
+    </li>
+  {{/each}}
+</ul>

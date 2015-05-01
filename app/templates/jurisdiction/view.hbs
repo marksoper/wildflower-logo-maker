@@ -1,6 +1,21 @@
+
+<div class="header">
+  <h1>
+    {{ model.name }} Licensing
+  </h1>
+</div>
+
+<div class="step-by-step">
+  Step-by-step guide to regulatory requirements 
+</div>
+
 <p>
     {{#link-to 'jurisdiction'}}Choose a different State{{/link-to}}
 </p>
 
-<span>You selected</span>
-<h3>{{model.name}}</h3>
+
+{{
+  teacher-requirements 
+  model=model
+}}
+
