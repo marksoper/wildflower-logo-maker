@@ -10,8 +10,8 @@ export default Ember.Component.extend({
     return false;
   },
   actions: {
-      selectStudentAge: function(j) {
-          this.set('selectedStudentAge', j);
+      selectStudentCount: function(j) {
+          this.set('selectedStudentCount', j);
           this.sendAction('action', j)
       }
   }

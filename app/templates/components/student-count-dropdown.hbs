@@ -1,0 +1,14 @@
+
+<span class="dropdown-label">
+  {{selectedStudentCount.value}}
+</span>
+
+<ul class="dropdown-list student-count-dropdown">
+  {{#each count in studentCounts}}
+    <li class="dropdown-item" {{action 'selectStudentCount' count}}>
+      <div class="dropdown-option">
+        {{ count.value }}
+      </div>
+    </li>
+  {{/each}}
+</ul>

@@ -1,5 +1,7 @@
 .licensing {
   padding: 20px 50px;
+  width: 100%;
+  max-width: 800px;
   .step-by-step {
     margin-bottom: 25px;
   }
@@ -7,5 +9,30 @@
     margin-bottom: 15px;
     font-size: 14px;
     font-weight: bold;
+  }
+  .licensing-step {
+    .licensing-step-body {
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: flex;
+    }
+    .licensing-step-input-container {
+      margin-bottom: 10px;
+    }
+    .licensing-step-control {
+      margin-top: 5px;
+    }
+    .licensing-step-output {
+      font-size: 24px;
+    }
+  }
+  .input-col {
+    width: 50%;
+    padding-right: 10px;
+  }
+  .output-col {
+    width: 50%;
+    padding-left: 10px;
   }
 }

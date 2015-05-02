@@ -1,20 +1,58 @@
 
-<div class="teacher-requirements">
+<div class="teacher-requirements licensing-step">
 
-  <div class="teacher-requirements-header">
+  <div class="teacher-requirements-header licensing-step-header">
     <h2>Step 1: Teacher Requirements</h2>
   </div>
 
-  <div class="box box--flush dropdown">
-    {{
-      student-age-dropdown
-      selectedStudentAge=selectedStudentAge
-      action = 'setStudentAge'
-    }}
-  </div>
+  <div class="teacher-requirements-body licensing-step-body">
 
-  <div class="teacher-requirements-output">
-    {{ requiredTeachers }}
+    <div class="licensing-step-input input-col">
+
+      <div class="studentAgeDropdownContainer licensing-step-input-container">
+        <label for="studentAgeDropdown">
+          What age are your students?
+        </label>
+        <div class="box box--flush dropdown licensing-step-control">
+          {{
+            student-age-dropdown
+            id = 'stuentAgeDropdown'
+            selectedStudentAge=selectedStudentAge
+            action = 'setStudentAge'
+            studentAgeRanges = studentAgeRanges
+          }}
+        </div>
+      </div>
+
+      <div class="studentAgeDropdownContainer licensing-step-input-container">
+        <label for="studentAgeDropdown">
+          How many students do you have?
+        </label>
+        <div class="box box--flush dropdown licensing-step-control">
+          {{
+            student-count-dropdown
+            id = 'stuentCountDropdown'
+            selectedStudentAge=selectedStudentCount
+            action = 'setStudentCount'
+            studentCounts = studentCounts
+          }}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="licensing-step-output output-col">
+      {{#if requiredTeachers}}
+        <div class="number-of-teachers-required">
+          {{ requiredTeachers }} teachers are required
+        </div>
+        <div style="font-size:10px">
+          <br>
+          NOTE: This algorithm not implemented. This is not the real number 
+        </div>
+      {{/if}}
+    </div>
+
   </div>
 
 </div>
