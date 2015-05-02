@@ -9,7 +9,7 @@ define('logo-maker/adapters/application', ['exports', 'ember-data'], function (e
 	exports['default'] = DS['default'].FixtureAdapter;
 
 });
-define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment', 'ember-data'], function (exports, Ember, Resolver, loadInitializers, config, DS) {
+define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment'], function (exports, Ember, Resolver, loadInitializers, config) {
 
   'use strict';
 
@@ -23,11 +23,6 @@ define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-init
     Resolver: Resolver['default'],
     LOG_TRANSITIONS: true
   });
-
-  //
-  // TODO: remove this for production
-  //
-  //App.ApplicationAdapter = DS.FixtureAdapter;
 
   loadInitializers['default'](App, config['default'].modulePrefix);
 
@@ -2640,7 +2635,7 @@ define('logo-maker/tests/app.jshint', function () {
 
   module('JSHint - .');
   test('app.js should pass jshint', function() { 
-    ok(false, 'app.js should pass jshint.\napp.js: line 5, col 8, \'DS\' is defined but never used.\n\n1 error'); 
+    ok(true, 'app.js should pass jshint.'); 
   });
 
 });
@@ -3207,7 +3202,7 @@ catch(err) {
 if (runningTests) {
   require("logo-maker/tests/test-helper");
 } else {
-  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.a3e417c5"});
+  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.02b382c4"});
 }
 
 /* jshint ignore:end */
