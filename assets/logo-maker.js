@@ -9,7 +9,7 @@ define('logo-maker/adapters/application', ['exports', 'ember-data'], function (e
 	exports['default'] = DS['default'].FixtureAdapter;
 
 });
-define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment'], function (exports, Ember, Resolver, loadInitializers, config) {
+define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment', 'ember-data'], function (exports, Ember, Resolver, loadInitializers, config, DS) {
 
   'use strict';
 
@@ -23,6 +23,11 @@ define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-init
     Resolver: Resolver['default'],
     LOG_TRANSITIONS: true
   });
+
+  //
+  // TODO: remove this for production
+  //
+  //App.ApplicationAdapter = DS.FixtureAdapter;
 
   loadInitializers['default'](App, config['default'].modulePrefix);
 
@@ -537,6 +542,22 @@ define('logo-maker/models/jurisdiction', ['exports', 'ember-data'], function (ex
 
   var Jurisdiction = DS['default'].Model.extend({
     name: DS['default'].attr('string')
+  });
+
+  var createJurisdictionFixtures = function createJurisdictionFixtures() {
+    var usaStates = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+    var jurisdictions = [];
+    usaStates.forEach(function (stateName) {
+      jurisdictions.push({
+        id: stateName.toLowerCase().replace(/\s/g, '-'),
+        name: stateName
+      });
+    });
+    return jurisdictions;
+  };
+
+  Jurisdiction.reopenClass({
+    FIXTURES: createJurisdictionFixtures()
   });
 
   exports['default'] = Jurisdiction;
@@ -2635,7 +2656,7 @@ define('logo-maker/tests/app.jshint', function () {
 
   module('JSHint - .');
   test('app.js should pass jshint', function() { 
-    ok(true, 'app.js should pass jshint.'); 
+    ok(false, 'app.js should pass jshint.\napp.js: line 5, col 8, \'DS\' is defined but never used.\n\n1 error'); 
   });
 
 });
@@ -3202,7 +3223,7 @@ catch(err) {
 if (runningTests) {
   require("logo-maker/tests/test-helper");
 } else {
-  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.02b382c4"});
+  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.a3e417c5"});
 }
 
 /* jshint ignore:end */
