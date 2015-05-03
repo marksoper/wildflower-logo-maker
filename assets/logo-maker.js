@@ -2360,6 +2360,17 @@ define('logo-maker/templates/logo', ['exports'], function (exports) {
         dom.setAttribute(el1,"class","l-sidebar l-sidebar--highlight");
         var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","box");
+        var el3 = dom.createTextNode("\n        ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n    ");
+        dom.appendChild(el1, el2);
         var el2 = dom.createElement("article");
         dom.setAttribute(el2,"class","widget");
         var el3 = dom.createTextNode("\n        ");
@@ -2597,7 +2608,7 @@ define('logo-maker/templates/logo', ['exports'], function (exports) {
       },
       render: function render(context, env, contextualElement) {
         var dom = env.dom;
-        var hooks = env.hooks, get = hooks.get, inline = hooks.inline, block = hooks.block, element = hooks.element;
+        var hooks = env.hooks, inline = hooks.inline, get = hooks.get, block = hooks.block, element = hooks.element;
         dom.detectNamespace(contextualElement);
         var fragment;
         if (env.useFragmentCache && dom.canClone) {
@@ -2620,18 +2631,20 @@ define('logo-maker/templates/logo', ['exports'], function (exports) {
         var element5 = dom.childAt(element4, [3]);
         var element6 = dom.childAt(element5, [1]);
         var element7 = dom.childAt(element5, [3]);
-        var morph0 = dom.createMorphAt(dom.childAt(element3, [1]),3,3);
-        var morph1 = dom.createMorphAt(dom.childAt(element3, [3, 3]),1,1);
-        var morph2 = dom.createMorphAt(dom.childAt(element3, [5, 3, 1]),1,1);
-        var morph3 = dom.createMorphAt(dom.childAt(element3, [9, 3, 1]),1,1);
-        var morph4 = dom.createMorphAt(dom.childAt(element3, [13, 3, 1]),1,1);
-        var morph5 = dom.createMorphAt(element4,1,1);
-        inline(env, morph0, context, "input", [], {"class": "widget-input", "type": "text", "value": get(env, context, "model.name")});
-        inline(env, morph1, context, "font-dropdown", [], {"fonts": get(env, context, "inventory.fonts"), "selectedFont": get(env, context, "selectedFont"), "action": "setFont"});
-        block(env, morph2, context, "each", [get(env, context, "inventory.flowers")], {"keyword": "flower"}, child0, null);
-        block(env, morph3, context, "each", [get(env, context, "inventory.palettes")], {"keyword": "palette"}, child1, null);
-        block(env, morph4, context, "each", [get(env, context, "inventory.arrangements")], {"keyword": "a"}, child2, null);
-        inline(env, morph5, context, "logo-view", [], {"view": "main", "arrangement": get(env, context, "arrangement.className"), "flowerObjects": get(env, context, "flowerObjects"), "selectedFont": get(env, context, "selectedFont"), "name": get(env, context, "name"), "palette": get(env, context, "palette")});
+        var morph0 = dom.createMorphAt(dom.childAt(element3, [1]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(element3, [3]),3,3);
+        var morph2 = dom.createMorphAt(dom.childAt(element3, [5, 3]),1,1);
+        var morph3 = dom.createMorphAt(dom.childAt(element3, [7, 3, 1]),1,1);
+        var morph4 = dom.createMorphAt(dom.childAt(element3, [11, 3, 1]),1,1);
+        var morph5 = dom.createMorphAt(dom.childAt(element3, [15, 3, 1]),1,1);
+        var morph6 = dom.createMorphAt(element4,1,1);
+        inline(env, morph0, context, "link-to", ["Go To Licensing", "jurisdiction"], {});
+        inline(env, morph1, context, "input", [], {"class": "widget-input", "type": "text", "value": get(env, context, "model.name")});
+        inline(env, morph2, context, "font-dropdown", [], {"fonts": get(env, context, "inventory.fonts"), "selectedFont": get(env, context, "selectedFont"), "action": "setFont"});
+        block(env, morph3, context, "each", [get(env, context, "inventory.flowers")], {"keyword": "flower"}, child0, null);
+        block(env, morph4, context, "each", [get(env, context, "inventory.palettes")], {"keyword": "palette"}, child1, null);
+        block(env, morph5, context, "each", [get(env, context, "inventory.arrangements")], {"keyword": "a"}, child2, null);
+        inline(env, morph6, context, "logo-view", [], {"view": "main", "arrangement": get(env, context, "arrangement.className"), "flowerObjects": get(env, context, "flowerObjects"), "selectedFont": get(env, context, "selectedFont"), "name": get(env, context, "name"), "palette": get(env, context, "palette")});
         element(env, element6, context, "action", ["saveFlower"], {});
         element(env, element7, context, "bind-attr", [], {"href": get(env, context, "dataurl"), "download": get(env, context, "name")});
         return fragment;
@@ -3223,7 +3236,7 @@ catch(err) {
 if (runningTests) {
   require("/wildflower-logo-maker//tests/test-helper");
 } else {
-  require("/wildflower-logo-maker//app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.95113495"});
+  require("/wildflower-logo-maker//app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.75a90982"});
 }
 
 /* jshint ignore:end */
