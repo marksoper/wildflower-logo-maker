@@ -3201,8 +3201,8 @@ define('logo-maker/views/application', ['exports', 'ember'], function (exports, 
 
 /* jshint ignore:start */
 
-define('logo-maker/config/environment', ['ember'], function(Ember) {
-  var prefix = 'logo-maker';
+define('/wildflower-logo-maker//config/environment', ['ember'], function(Ember) {
+  var prefix = '/wildflower-logo-maker/';
 /* jshint ignore:start */
 
 try {
@@ -3221,9 +3221,9 @@ catch(err) {
 });
 
 if (runningTests) {
-  require("logo-maker/tests/test-helper");
+  require("/wildflower-logo-maker//tests/test-helper");
 } else {
-  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.95113495"});
+  require("/wildflower-logo-maker//app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.95113495"});
 }
 
 /* jshint ignore:end */
