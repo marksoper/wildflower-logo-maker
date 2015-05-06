@@ -41,15 +41,15 @@
 
     </div>
 
-    <div class="licensing-step-output output-col">
+    <div class="output-col">
       {{#if requiredTeachers }}
-        <div class="teachers-required-output">
+        <div class="teachers-required-output licensing-step-output">
 
-          <div class="inputs-display" style="display:none">
-            <div class="student-count-display">
+          <div class="inputs-display">
+            <div class="student-count-display inputs-display-input">
               {{ requiredTeachers.studentCount.value }} students
             </div>
-            <div class="age-range-display">
+            <div class="age-range-display inputs-display-input">
               {{ requiredTeachers.ageRange.ageRange }}
             </div>
           </div>
@@ -66,7 +66,7 @@
 
               <div class="number-of-teachers-required display-entry">
                 <div class="display-property">
-                  Regulation Number:
+                  Regulations:
                 </div>
                 <div class="display-value">
                   {{ requiredTeachers.ageRange.regulationNumber }} 
@@ -75,19 +75,33 @@
 
               <div class="number-of-teachers-required display-entry">
                 <div class="display-property">
-                  Total teachers required:
+                  Teachers required:
                 </div>
                 <div class="display-value">
                   {{ requiredTeachers.numberOfTeachersRequired }} 
                 </div>
               </div>
 
-              <div class="educator-qualifications">
-                {{ requiredTeachers.ageRange.educatorQualifications }}
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Qualifications:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.ageRange.educatorQualifications }} 
+                </div>
               </div>
-              <div class="notes">
-                {{ requiredTeachers.ageRange.notes }}
-              </div>
+
+              {{#if requiredTeachers.ageRange.notes }}
+                <div class="number-of-teachers-required display-entry">
+                  <div class="display-property">
+                    Notes:
+                  </div>
+                  <div class="display-value">
+                    {{ requiredTeachers.ageRange.notes }} 
+                  </div>
+                </div>
+              {{/if}}
+
             {{/unless}}
           </div>
         </div>

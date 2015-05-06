@@ -1,7 +1,8 @@
 .licensing {
   padding: 20px 50px;
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
+  min-width: 480px;
   .step-by-step {
     margin-bottom: 25px;
   }
@@ -18,31 +19,53 @@
       display: flex;
     }
     .licensing-step-input-container {
+      label {
+        font-weight: bold;
+        font-size: 14px;
+      }
       margin-bottom: 10px;
     }
     .licensing-step-control {
       margin-top: 5px;
     }
     .licensing-step-output {
-      
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+      padding: 20px;
+      border-radius: 4px;
+      .inputs-display: {
+        margin-bottom: 10px;
+        border-bottom: 1px solid #aaa;  
+      }
     }
   }
   .input-col {
-    width: 50%;
+    width: 40%;
     padding-right: 10px;
   }
   .output-col {
-    width: 50%;
+    width: 60%;
     padding-left: 10px;
   }
 
+  .inputs-display-input, .display-entry {
+    border: 1px solid #eee;
+    margin: 5px 0;
+    padding: 5px 10px;
+  }
+
   .display-entry {
+    margin: 10px 0;
     display: -webkit-box;
     display: -moz-box;
     display: -ms-flexbox;
     display: flex;
     .display-property {
-      width: 200px;
+      width: 40%px;
+      min-width: 140px;
+      max-width: 240px;
+      font-size: 14px;
+      font-weight: bold;
     }
     .display-value {
 
