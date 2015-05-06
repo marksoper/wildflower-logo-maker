@@ -58,9 +58,17 @@
                 Exceeds maximum group size of {{ requiredTeachers.ageRange.maxGroupSize }}
               </div>
             {{/if}}
-            <div class="notes">
-              {{ requiredTeachers.ageRange.notes }}
-            </div>
+            {{#unless requiredTeachers.tooManyStudentsError }}
+              <div class="number-of-teachers-required">
+                {{ requiredTeachers.numberOfTeachersRequired }} total teachers required
+              </div>
+              <div class="educator-qualifications">
+                {{ requiredTeachers.ageRange.educatorQualifications }}
+              </div>
+              <div class="notes">
+                {{ requiredTeachers.ageRange.notes }}
+              </div>
+            {{/unless}}
           </div>
         </div>
       {{/if}}

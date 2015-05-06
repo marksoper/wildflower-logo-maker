@@ -6,13 +6,21 @@ var calculateRequiredTeachers = function(ageRange, studentCount) {
     return null;
   }
   var tooManyStudentsError;
+  var numberOfTeachersRequired;
   if (studentCount.value > ageRange.maxGroupSize) {
     tooManyStudentsError = true;
+  } else {
+    ageRange.educatorsRequiredPerNumberOfChildren.forEach(function(range) {
+      if (studentCount.value >= range[0][0] && studentCount.value <= range[0][1]) {
+        numberOfTeachersRequired = range[1];
+      }
+    });
   }
   return {
     ageRange: ageRange,
     studentCount: studentCount,
-    tooManyStudentsError: tooManyStudentsError
+    tooManyStudentsError: tooManyStudentsError,
+    numberOfTeachersRequired: numberOfTeachersRequired
   };
 };
 
