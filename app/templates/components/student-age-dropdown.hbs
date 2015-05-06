@@ -1,14 +1,11 @@
 
 
 <span class="dropdown-label">
-  {{selectedStudentAge.value}}
+  {{selectedStudentAge.ageRange}}
 </span>
-
-{{ ageRanges }}
 
 <ul class="dropdown-list student-age-dropdown">
   {{#each ageRange in studentAgeRanges}}
-    {{ ageRange }}
     <li class="dropdown-item" {{action 'selectStudentAge' ageRange}}>
       <div class="dropdown-option">
         {{ ageRange.ageRange }}

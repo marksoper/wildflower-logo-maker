@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import MA from '../models/MA';
 
 var calculateRequiredTeachers = function(studentAge, studentCount) {
   if (studentAge && studentCount) {
@@ -19,24 +20,7 @@ export default Ember.Component.extend({
       this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
     }
   },
-  studentAgeRanges: [
-    {
-      id: "1",
-      value: "0-3"
-    },
-    {
-      id: "2",
-      value: "3-6"
-    },
-    {
-      id: "3",
-      value: "6-9"
-    },
-    {
-      id: "4",
-      value: "9-12"
-    }
-  ],
+  studentAgeRanges: MA.ageRanges,
   studentCounts: (function() {
     var counts = [];
     var i = 1;
