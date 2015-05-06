@@ -1,11 +1,19 @@
 import Ember from 'ember';
 import MA from '../models/MA';
 
-var calculateRequiredTeachers = function(studentAge, studentCount) {
-  if (studentAge && studentCount) {
-    return studentAge.id * 2 + studentCount.id;
+var calculateRequiredTeachers = function(ageRange, studentCount) {
+  if (!ageRange || !studentCount) {
+    return null;
   }
-  return null;
+  var tooManyStudentsError;
+  if (studentCount.value > ageRange.maxGroupSize) {
+    tooManyStudentsError = true;
+  }
+  return {
+    ageRange: ageRange,
+    studentCount: studentCount,
+    tooManyStudentsError: tooManyStudentsError
+  };
 };
 
 export default Ember.Component.extend({

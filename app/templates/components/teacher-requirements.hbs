@@ -42,13 +42,26 @@
     </div>
 
     <div class="licensing-step-output output-col">
-      {{#if requiredTeachers}}
-        <div class="number-of-teachers-required">
-          {{ requiredTeachers }} teachers are required
-        </div>
-        <div style="font-size:10px">
-          <br>
-          NOTE: This algorithm not implemented. This is not the real number 
+      {{#if requiredTeachers }}
+        <div class="teachers-required-output">
+          <div class="inputs-display">
+            <div class="student-count-display">
+              {{ requiredTeachers.studentCount.value }} students
+            </div>
+            <div class="age-range-display">
+              {{ requiredTeachers.ageRange.ageRange }}
+            </div>
+          </div>
+          <div class="outputs-display">
+            {{#if requiredTeachers.tooManyStudentsError }}
+              <div class="tooManyStudentsError">
+                Exceeds maximum group size of {{ requiredTeachers.ageRange.maxGroupSize }}
+              </div>
+            {{/if}}
+            <div class="notes">
+              {{ requiredTeachers.ageRange.notes }}
+            </div>
+          </div>
         </div>
       {{/if}}
     </div>
