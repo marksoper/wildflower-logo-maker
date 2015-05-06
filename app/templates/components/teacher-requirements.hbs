@@ -44,7 +44,8 @@
     <div class="licensing-step-output output-col">
       {{#if requiredTeachers }}
         <div class="teachers-required-output">
-          <div class="inputs-display">
+
+          <div class="inputs-display" style="display:none">
             <div class="student-count-display">
               {{ requiredTeachers.studentCount.value }} students
             </div>
@@ -52,16 +53,35 @@
               {{ requiredTeachers.ageRange.ageRange }}
             </div>
           </div>
+
           <div class="outputs-display">
+
             {{#if requiredTeachers.tooManyStudentsError }}
               <div class="tooManyStudentsError">
                 Exceeds maximum group size of {{ requiredTeachers.ageRange.maxGroupSize }}
               </div>
             {{/if}}
+
             {{#unless requiredTeachers.tooManyStudentsError }}
-              <div class="number-of-teachers-required">
-                {{ requiredTeachers.numberOfTeachersRequired }} total teachers required
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Regulation Number:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.ageRange.regulationNumber }} 
+                </div>
               </div>
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Total teachers required:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.numberOfTeachersRequired }} 
+                </div>
+              </div>
+
               <div class="educator-qualifications">
                 {{ requiredTeachers.ageRange.educatorQualifications }}
               </div>

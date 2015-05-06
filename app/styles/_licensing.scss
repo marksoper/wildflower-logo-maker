@@ -24,7 +24,7 @@
       margin-top: 5px;
     }
     .licensing-step-output {
-      font-size: 24px;
+      
     }
   }
   .input-col {
@@ -35,4 +35,18 @@
     width: 50%;
     padding-left: 10px;
   }
+
+  .display-entry {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    .display-property {
+      width: 200px;
+    }
+    .display-value {
+
+    }
+  }
+
 }
