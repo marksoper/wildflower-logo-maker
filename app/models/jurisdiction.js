@@ -8,8 +8,9 @@ var createFixedAgeGroupQualifications = function(stateName) {
   if (stateName !== "Massachusetts") {
     return null;
   }
-  return {
-    0: {
+  return [
+    {
+      id: 0,
       ageGroup: "Infant/Toddler Group",
       ageRange: "0 - 33 months",
       maxGroupSize: 9,
@@ -19,7 +20,8 @@ var createFixedAgeGroupQualifications = function(stateName) {
       educatorQualifications: "At least one Infant/Toddler Teacher, per 606 CMR 7.09(18)(c)2",
       notes: "No more than 3 infants (up to 15 months old)"
     },
-    1: {
+    {
+      id: 1,
       ageGroup: "Toddler/Preschool Group",
       ageRange: "15 months - school age",
       maxGroupSize: 9,
@@ -28,7 +30,8 @@ var createFixedAgeGroupQualifications = function(stateName) {
       regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
       educatorQualifications: "At least one Infant/Toddler and Preschool Teacher, per 606 CMR 7.09(18)(c)2"
     },
-    2: {
+    {
+      id: 2,
       ageGroup: "Preschool/School Age Group",
       ageRange: "33 months - school age",
       maxGroupSize: 20,
@@ -37,7 +40,8 @@ var createFixedAgeGroupQualifications = function(stateName) {
       regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
       educatorQualifications: "At least one Preschool Teacher, per 606 CMR 7.09(18)(c)2"
     },
-    3: {
+    {
+      id: 3,
       ageGroup: "Kindergarten/School Age Group",
       ageRange: "Kindergarten (attending 1st grade following year) - school age",
       maxGroupSize: 26,
@@ -46,7 +50,7 @@ var createFixedAgeGroupQualifications = function(stateName) {
       regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
       educatorQualifications: "Group Leader, per 606 CMR 7.09(19)(a)2"
     }
-  }
+  ]
 };
 
 var createJurisdictionFixtures = function() {
@@ -55,7 +59,8 @@ var createJurisdictionFixtures = function() {
   usaStates.forEach(function(stateName) {
     var jd = {
       id: stateName.toLowerCase().replace(/\s/g, "-"),
-      name: stateName
+      name: stateName,
+      bogus: "foo"
     };
     if (stateName === "Massachusetts") {
       jd.ageRanges = createFixedAgeGroupQualifications(stateName);
