@@ -1,0 +1,17 @@
+
+
+
+
+<span class="dropdown-label">
+  {{selectedSqFt.value}}
+</span>
+
+<ul class="dropdown-list">
+  {{#each sqft in sqfts}}
+    <li class="dropdown-item" {{action 'selectSqFt' sqft}}>
+      <div class="dropdown-option">
+        {{ sqft.value }}
+      </div>
+    </li>
+  {{/each}}
+</ul>

@@ -1,0 +1,59 @@
+
+
+<div class="num-students-by-sq-ft licensing-step">
+
+  <div class="licensing-step-header">
+    <h2>Number of students by square footage</h2>
+  </div>
+
+  <div class="licensing-step-body">
+
+    <div class="licensing-step-input input-col">
+
+      <div class="licensing-step-input-container">
+        <label for="studentAgeDropdown">
+          What is the square footage of the classroom?
+        </label>
+        <div class="box box--flush dropdown licensing-step-control">
+          {{
+            sqft-dropdown
+            id = 'sqFtDropdown'
+            selectedStudentAge=selectedSqFt
+            action = 'setSqFt'
+            sqfts = sqfts
+          }}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="output-col">
+      {{#if studentCount }}
+        <div class="licensing-step-output">
+
+          <div class="inputs-display">
+            <div class="student-count-display inputs-display-input">
+              {{ sqft.value }} square ft
+            </div>
+          </div>
+
+          <div class="outputs-display">
+
+              <div class="display-entry">
+                <div class="display-property">
+                  Number of students:
+                </div>
+                <div class="display-value">
+                  {{ studentCount }} 
+                </div>
+              </div>
+
+          </div>
+        </div>
+      {{/if}}
+    </div>
+
+  </div>
+
+</div>
+

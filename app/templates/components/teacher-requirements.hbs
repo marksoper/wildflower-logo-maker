@@ -1,15 +1,15 @@
 
 <div class="teacher-requirements licensing-step">
 
-  <div class="teacher-requirements-header licensing-step-header">
+  <div class="licensing-step-header">
     <h2>Teacher and Building Requirements by Student Age and Number of Students</h2>
   </div>
 
-  <div class="teacher-requirements-body licensing-step-body">
+  <div class="licensing-step-body">
 
     <div class="licensing-step-input input-col">
 
-      <div class="studentAgeDropdownContainer licensing-step-input-container">
+      <div class="licensing-step-input-container">
         <label for="studentAgeDropdown">
           What age are your students?
         </label>
@@ -24,14 +24,14 @@
         </div>
       </div>
 
-      <div class="studentAgeDropdownContainer licensing-step-input-container">
-        <label for="studentAgeDropdown">
+      <div class="licensing-step-input-container">
+        <label for="studentCountDropdown">
           How many students do you have?
         </label>
         <div class="box box--flush dropdown licensing-step-control">
           {{
             student-count-dropdown
-            id = 'stuentCountDropdown'
+            id = 'studentCountDropdown'
             selectedStudentAge=selectedStudentCount
             action = 'setStudentCount'
             studentCounts = studentCounts

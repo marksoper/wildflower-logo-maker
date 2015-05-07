@@ -2,7 +2,7 @@ import Ember from 'ember';
 import MA from '../models/MA';
 
 var calculateSquareFootage = function(studentCount) {
-  return 50 * studentCount.value;
+  return 50 * studentCount;
 };
 
 var calculateRequiredTeachers = function(ageRange, studentCount) {
@@ -11,11 +11,11 @@ var calculateRequiredTeachers = function(ageRange, studentCount) {
   }
   var tooManyStudentsError;
   var numberOfTeachersRequired;
-  if (studentCount.value > ageRange.maxGroupSize) {
+  if (studentCount > ageRange.maxGroupSize) {
     tooManyStudentsError = true;
   } else {
     ageRange.educatorsRequiredPerNumberOfChildren.forEach(function(range) {
-      if (studentCount.value >= range[0][0] && studentCount.value <= range[0][1]) {
+      if (studentCount >= range[0][0] && studentCount <= range[0][1]) {
         numberOfTeachersRequired = range[1];
       }
     });
@@ -34,11 +34,15 @@ export default Ember.Component.extend({
   actions: {
     setStudentAge: function(studentAge) {
       this.set('studentAge', studentAge);
-      this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+      if (this.studentAge && this.studentCount) {
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+      }
     },
     setStudentCount: function(studentCount) {
       this.set('studentCount', studentCount);
-      this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+      if (this.studentAge && this.studentCount) {
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+      }
     }
   },
   studentAgeRanges: MA.ageRanges,
