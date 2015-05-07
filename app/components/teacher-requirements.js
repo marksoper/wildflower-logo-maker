@@ -1,6 +1,10 @@
 import Ember from 'ember';
 import MA from '../models/MA';
 
+var calculateSquareFootage = function(studentCount) {
+  return 50 * studentCount.value;
+};
+
 var calculateRequiredTeachers = function(ageRange, studentCount) {
   if (!ageRange || !studentCount) {
     return null;
@@ -20,7 +24,8 @@ var calculateRequiredTeachers = function(ageRange, studentCount) {
     ageRange: ageRange,
     studentCount: studentCount,
     tooManyStudentsError: tooManyStudentsError,
-    numberOfTeachersRequired: numberOfTeachersRequired
+    numberOfTeachersRequired: numberOfTeachersRequired,
+    squareFootage: calculateSquareFootage(studentCount)
   };
 };
 
