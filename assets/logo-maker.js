@@ -9,7 +9,7 @@ define('logo-maker/adapters/application', ['exports', 'ember-data'], function (e
 	exports['default'] = DS['default'].FixtureAdapter;
 
 });
-define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment', 'ember-data'], function (exports, Ember, Resolver, loadInitializers, config, DS) {
+define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-initializers', 'logo-maker/config/environment'], function (exports, Ember, Resolver, loadInitializers, config) {
 
   'use strict';
 
@@ -23,11 +23,6 @@ define('logo-maker/app', ['exports', 'ember', 'ember/resolver', 'ember/load-init
     Resolver: Resolver['default'],
     LOG_TRANSITIONS: true
   });
-
-  //
-  // TODO: remove this for production
-  //
-  //App.ApplicationAdapter = DS.FixtureAdapter;
 
   loadInitializers['default'](App, config['default'].modulePrefix);
 
@@ -234,6 +229,37 @@ define('logo-maker/components/logo-view', ['exports', 'ember'], function (export
     });
 
 });
+define('logo-maker/components/num-students-by-sq-ft', ['exports', 'ember'], function (exports, Ember) {
+
+  'use strict';
+
+  var calculateNumStudentsFromSqFt = function calculateNumStudentsFromSqFt(sqft) {
+    return Math.floor(sqft / 50);
+  };
+
+  exports['default'] = Ember['default'].Component.extend({
+    requiredTeachers: null,
+    actions: {
+      setSqFt: function setSqFt(sqft) {
+        this.set('sqft', sqft);
+        this.set('studentCount', calculateNumStudentsFromSqFt(this.sqft.value));
+      }
+    },
+    sqfts: (function () {
+      var sqfts = [];
+      var i = 1;
+      while (i <= 30) {
+        sqfts.push({
+          id: i * 50,
+          value: i * 50
+        });
+        i += 1;
+      }
+      return sqfts;
+    })()
+  });
+
+});
 define('logo-maker/components/palette-box', ['exports', 'ember'], function (exports, Ember) {
 
     'use strict';
@@ -265,6 +291,28 @@ define('logo-maker/components/palette-box', ['exports', 'ember'], function (expo
             }
         }
     });
+
+});
+define('logo-maker/components/sqft-dropdown', ['exports', 'ember'], function (exports, Ember) {
+
+  'use strict';
+
+  exports['default'] = Ember['default'].Component.extend({
+    id: 'filter',
+    active: false,
+    classNames: ['dropdown'],
+    classNameBindings: ['active'],
+    click: function click() {
+      this.set('active', !this.get('active'));
+      return false;
+    },
+    actions: {
+      selectSqFt: function selectSqFt(j) {
+        this.set('selectedSqFt', j);
+        this.sendAction('action', j);
+      }
+    }
+  });
 
 });
 define('logo-maker/components/student-age-dropdown', ['exports', 'ember'], function (exports, Ember) {
@@ -311,15 +359,36 @@ define('logo-maker/components/student-count-dropdown', ['exports', 'ember'], fun
   });
 
 });
-define('logo-maker/components/teacher-requirements', ['exports', 'ember'], function (exports, Ember) {
+define('logo-maker/components/teacher-requirements', ['exports', 'ember', 'logo-maker/models/MA'], function (exports, Ember, MA) {
 
   'use strict';
 
-  var calculateRequiredTeachers = function calculateRequiredTeachers(studentAge, studentCount) {
-    if (studentAge && studentCount) {
-      return studentAge.id * 2 + studentCount.id;
+  var calculateSquareFootage = function calculateSquareFootage(studentCount) {
+    return 50 * studentCount;
+  };
+
+  var calculateRequiredTeachers = function calculateRequiredTeachers(ageRange, studentCount) {
+    if (!ageRange || !studentCount) {
+      return null;
     }
-    return null;
+    var tooManyStudentsError;
+    var numberOfTeachersRequired;
+    if (studentCount > ageRange.maxGroupSize) {
+      tooManyStudentsError = true;
+    } else {
+      ageRange.educatorsRequiredPerNumberOfChildren.forEach(function (range) {
+        if (studentCount >= range[0][0] && studentCount <= range[0][1]) {
+          numberOfTeachersRequired = range[1];
+        }
+      });
+    }
+    return {
+      ageRange: ageRange,
+      studentCount: studentCount,
+      tooManyStudentsError: tooManyStudentsError,
+      numberOfTeachersRequired: numberOfTeachersRequired,
+      squareFootage: calculateSquareFootage(studentCount)
+    };
   };
 
   exports['default'] = Ember['default'].Component.extend({
@@ -327,26 +396,18 @@ define('logo-maker/components/teacher-requirements', ['exports', 'ember'], funct
     actions: {
       setStudentAge: function setStudentAge(studentAge) {
         this.set('studentAge', studentAge);
-        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+        if (this.studentAge && this.studentCount) {
+          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+        }
       },
       setStudentCount: function setStudentCount(studentCount) {
         this.set('studentCount', studentCount);
-        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+        if (this.studentAge && this.studentCount) {
+          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+        }
       }
     },
-    studentAgeRanges: [{
-      id: '1',
-      value: '0-3'
-    }, {
-      id: '2',
-      value: '3-6'
-    }, {
-      id: '3',
-      value: '6-9'
-    }, {
-      id: '4',
-      value: '9-12'
-    }],
+    studentAgeRanges: MA['default'].ageRanges,
     studentCounts: (function () {
       var counts = [];
       var i = 1;
@@ -367,16 +428,6 @@ define('logo-maker/controllers/jurisdiction', ['exports', 'ember'], function (ex
 	'use strict';
 
 	exports['default'] = Ember['default'].Controller.extend({});
-
-	// needs: ['application'],
-	// selectedJurisdiction: function() {
-	//   return this.get('model').findBy('id', this.get('jurisdiction'))
-	// }.property('jurisdiction'),
-	// actions: {
-	//   setJurisdiction: function(jurisdiction) {
-	//     this.set('jurisdiction', jurisdiction.id);
-	//   }
-	// }
 
 });
 define('logo-maker/controllers/logo', ['exports', 'ember'], function (exports, Ember) {
@@ -516,6 +567,55 @@ define('logo-maker/initializers/export-application-global', ['exports', 'ember',
   };
 
 });
+define('logo-maker/models/MA', ['exports'], function (exports) {
+
+  'use strict';
+
+
+  var ageRanges = [{
+    id: 0,
+    ageGroup: "Infant/Toddler Group",
+    ageRange: "0 - 33 months",
+    maxGroupSize: 9,
+    educatorsRequiredPerNumberOfChildren: [[[1, 3], 1], [[4, 9], 2]],
+    educatorChildRatio: "1:3; one additional educator for 4-9 children",
+    regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
+    educatorQualifications: "At least one Infant/Toddler Teacher, per 606 CMR 7.09(18)(c)2",
+    notes: "No more than 3 infants (up to 15 months old)"
+  }, {
+    id: 1,
+    ageGroup: "Toddler/Preschool Group",
+    ageRange: "15 months - school age",
+    maxGroupSize: 9,
+    educatorsRequiredPerNumberOfChildren: [[[1, 5], 1], [[6, 9], 2]],
+    educatorChildRatio: "1:5; one additional educator for 6-9 children",
+    regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
+    educatorQualifications: "At least one Infant/Toddler and Preschool Teacher, per 606 CMR 7.09(18)(c)2"
+  }, {
+    id: 2,
+    ageGroup: "Preschool/School Age Group",
+    ageRange: "33 months - school age",
+    maxGroupSize: 20,
+    educatorsRequiredPerNumberOfChildren: [[[1, 10], 1], [[11, 20], 2]],
+    educatorChildRatio: "1:10",
+    regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
+    educatorQualifications: "At least one Preschool Teacher, per 606 CMR 7.09(18)(c)2"
+  }, {
+    id: 3,
+    ageGroup: "Kindergarten/School Age Group",
+    ageRange: "Kindergarten (attending 1st grade following year) - school age",
+    maxGroupSize: 26,
+    educatorsRequiredPerNumberOfChildren: [[[1, 13], 1], [[14, 26], 2]],
+    educatorChildRatio: "1:13",
+    regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
+    educatorQualifications: "Group Leader, per 606 CMR 7.09(19)(a)2"
+  }];
+
+  exports['default'] = {
+    ageRanges: ageRanges
+  };
+
+});
 define('logo-maker/models/flower', ['exports', 'ember-data'], function (exports, DS) {
 
     'use strict';
@@ -536,7 +636,7 @@ define('logo-maker/models/font', ['exports', 'ember-data'], function (exports, D
     });
 
 });
-define('logo-maker/models/jurisdiction', ['exports', 'ember-data'], function (exports, DS) {
+define('logo-maker/models/jurisdiction', ['exports', 'ember-data', 'logo-maker/models/MA'], function (exports, DS, MA) {
 
   'use strict';
 
@@ -544,14 +644,26 @@ define('logo-maker/models/jurisdiction', ['exports', 'ember-data'], function (ex
     name: DS['default'].attr('string')
   });
 
+  var createFixedAgeGroupQualifications = function createFixedAgeGroupQualifications(stateName) {
+    if (stateName !== 'Massachusetts') {
+      return null;
+    }
+    return MA['default'].ageRanges;
+  };
+
   var createJurisdictionFixtures = function createJurisdictionFixtures() {
     var usaStates = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
     var jurisdictions = [];
     usaStates.forEach(function (stateName) {
-      jurisdictions.push({
+      var jd = {
         id: stateName.toLowerCase().replace(/\s/g, '-'),
-        name: stateName
-      });
+        name: stateName,
+        bogus: 'foo'
+      };
+      if (stateName === 'Massachusetts') {
+        jd.ageRanges = createFixedAgeGroupQualifications(stateName);
+      }
+      jurisdictions.push(jd);
     });
     return jurisdictions;
   };
@@ -1287,6 +1399,223 @@ define('logo-maker/templates/components/logo-view', ['exports'], function (expor
   }()));
 
 });
+define('logo-maker/templates/components/num-students-by-sq-ft', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    var child0 = (function() {
+      return {
+        isHTMLBars: true,
+        revision: "Ember@1.11.1",
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("        ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("div");
+          dom.setAttribute(el1,"class","licensing-step-output");
+          var el2 = dom.createTextNode("\n\n          ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","inputs-display");
+          var el3 = dom.createTextNode("\n            ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","student-count-display inputs-display-input");
+          var el4 = dom.createTextNode("\n              ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createComment("");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode(" square ft\n            ");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n          ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n\n          ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","outputs-display");
+          var el3 = dom.createTextNode("\n\n              ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","display-entry");
+          var el4 = dom.createTextNode("\n                ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("div");
+          dom.setAttribute(el4,"class","display-property");
+          var el5 = dom.createTextNode("\n                  Number of students:\n                ");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n                ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createElement("div");
+          dom.setAttribute(el4,"class","display-value");
+          var el5 = dom.createTextNode("\n                  ");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createComment("");
+          dom.appendChild(el4, el5);
+          var el5 = dom.createTextNode(" \n                ");
+          dom.appendChild(el4, el5);
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n              ");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n\n          ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n        ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          var element0 = dom.childAt(fragment, [1]);
+          var morph0 = dom.createMorphAt(dom.childAt(element0, [1, 1]),1,1);
+          var morph1 = dom.createMorphAt(dom.childAt(element0, [3, 1, 3]),1,1);
+          content(env, morph0, context, "sqft.value");
+          content(env, morph1, context, "studentCount");
+          return fragment;
+        }
+      };
+    }());
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","num-students-by-sq-ft licensing-step");
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","licensing-step-header");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("h2");
+        var el4 = dom.createTextNode("Number of students by square footage");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","licensing-step-body");
+        var el3 = dom.createTextNode("\n\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3,"class","licensing-step-input input-col");
+        var el4 = dom.createTextNode("\n\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createElement("div");
+        dom.setAttribute(el4,"class","licensing-step-input-container");
+        var el5 = dom.createTextNode("\n        ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("label");
+        dom.setAttribute(el5,"for","studentAgeDropdown");
+        var el6 = dom.createTextNode("\n          What is the square footage of the classroom?\n        ");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n        ");
+        dom.appendChild(el4, el5);
+        var el5 = dom.createElement("div");
+        dom.setAttribute(el5,"class","box box--flush dropdown licensing-step-control");
+        var el6 = dom.createTextNode("\n          ");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createComment("");
+        dom.appendChild(el5, el6);
+        var el6 = dom.createTextNode("\n        ");
+        dom.appendChild(el5, el6);
+        dom.appendChild(el4, el5);
+        var el5 = dom.createTextNode("\n      ");
+        dom.appendChild(el4, el5);
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("div");
+        dom.setAttribute(el3,"class","output-col");
+        var el4 = dom.createTextNode("\n");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        var hooks = env.hooks, get = hooks.get, inline = hooks.inline, block = hooks.block;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        var element1 = dom.childAt(fragment, [1, 3]);
+        var morph0 = dom.createMorphAt(dom.childAt(element1, [1, 1, 3]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(element1, [3]),1,1);
+        inline(env, morph0, context, "sqft-dropdown", [], {"id": "sqFtDropdown", "selectedStudentAge": get(env, context, "selectedSqFt"), "action": "setSqFt", "sqfts": get(env, context, "sqfts")});
+        block(env, morph1, context, "if", [get(env, context, "studentCount")], {}, child0, null);
+        return fragment;
+      }
+    };
+  }()));
+
+});
 define('logo-maker/templates/components/palette-box', ['exports'], function (exports) {
 
   'use strict';
@@ -1393,6 +1722,132 @@ define('logo-maker/templates/components/palette-box', ['exports'], function (exp
   }()));
 
 });
+define('logo-maker/templates/components/sqft-dropdown', ['exports'], function (exports) {
+
+  'use strict';
+
+  exports['default'] = Ember.HTMLBars.template((function() {
+    var child0 = (function() {
+      return {
+        isHTMLBars: true,
+        revision: "Ember@1.11.1",
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("    ");
+          dom.appendChild(el0, el1);
+          var el1 = dom.createElement("li");
+          dom.setAttribute(el1,"class","dropdown-item");
+          var el2 = dom.createTextNode("\n      ");
+          dom.appendChild(el1, el2);
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","dropdown-option");
+          var el3 = dom.createTextNode("\n        ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n      ");
+          dom.appendChild(el2, el3);
+          dom.appendChild(el1, el2);
+          var el2 = dom.createTextNode("\n    ");
+          dom.appendChild(el1, el2);
+          dom.appendChild(el0, el1);
+          var el1 = dom.createTextNode("\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          var hooks = env.hooks, get = hooks.get, element = hooks.element, content = hooks.content;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          var element0 = dom.childAt(fragment, [1]);
+          var morph0 = dom.createMorphAt(dom.childAt(element0, [1]),1,1);
+          element(env, element0, context, "action", ["selectSqFt", get(env, context, "sqft")], {});
+          content(env, morph0, context, "sqft.value");
+          return fragment;
+        }
+      };
+    }());
+    return {
+      isHTMLBars: true,
+      revision: "Ember@1.11.1",
+      blockParams: 0,
+      cachedFragment: null,
+      hasRendered: false,
+      build: function build(dom) {
+        var el0 = dom.createDocumentFragment();
+        var el1 = dom.createTextNode("\n\n\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("span");
+        dom.setAttribute(el1,"class","dropdown-label");
+        var el2 = dom.createTextNode("\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("ul");
+        dom.setAttribute(el1,"class","dropdown-list");
+        var el2 = dom.createTextNode("\n");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createComment("");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n");
+        dom.appendChild(el0, el1);
+        return el0;
+      },
+      render: function render(context, env, contextualElement) {
+        var dom = env.dom;
+        var hooks = env.hooks, content = hooks.content, get = hooks.get, block = hooks.block;
+        dom.detectNamespace(contextualElement);
+        var fragment;
+        if (env.useFragmentCache && dom.canClone) {
+          if (this.cachedFragment === null) {
+            fragment = this.build(dom);
+            if (this.hasRendered) {
+              this.cachedFragment = fragment;
+            } else {
+              this.hasRendered = true;
+            }
+          }
+          if (this.cachedFragment) {
+            fragment = dom.cloneNode(this.cachedFragment, true);
+          }
+        } else {
+          fragment = this.build(dom);
+        }
+        var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(fragment, [3]),1,1);
+        content(env, morph0, context, "selectedSqFt.value");
+        block(env, morph1, context, "each", [get(env, context, "sqfts")], {"keyword": "sqft"}, child0, null);
+        return fragment;
+      }
+    };
+  }()));
+
+});
 define('logo-maker/templates/components/student-age-dropdown', ['exports'], function (exports) {
 
   'use strict';
@@ -1452,7 +1907,7 @@ define('logo-maker/templates/components/student-age-dropdown', ['exports'], func
           var element0 = dom.childAt(fragment, [1]);
           var morph0 = dom.createMorphAt(dom.childAt(element0, [1]),1,1);
           element(env, element0, context, "action", ["selectStudentAge", get(env, context, "ageRange")], {});
-          content(env, morph0, context, "ageRange.value");
+          content(env, morph0, context, "ageRange.ageRange");
           return fragment;
         }
       };
@@ -1509,7 +1964,7 @@ define('logo-maker/templates/components/student-age-dropdown', ['exports'], func
         }
         var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
         var morph1 = dom.createMorphAt(dom.childAt(fragment, [3]),1,1);
-        content(env, morph0, context, "selectedStudentAge.value");
+        content(env, morph0, context, "selectedStudentAge.ageRange");
         block(env, morph1, context, "each", [get(env, context, "studentAgeRanges")], {"keyword": "ageRange"}, child0, null);
         return fragment;
       }
@@ -1649,6 +2104,271 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
 
   exports['default'] = Ember.HTMLBars.template((function() {
     var child0 = (function() {
+      var child0 = (function() {
+        return {
+          isHTMLBars: true,
+          revision: "Ember@1.11.1",
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","display-entry error-message");
+            var el2 = dom.createTextNode("\n                Exceeds maximum group size of ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createComment("");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, content = hooks.content;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
+            content(env, morph0, context, "requiredTeachers.ageRange.maxGroupSize");
+            return fragment;
+          }
+        };
+      }());
+      var child1 = (function() {
+        var child0 = (function() {
+          return {
+            isHTMLBars: true,
+            revision: "Ember@1.11.1",
+            blockParams: 0,
+            cachedFragment: null,
+            hasRendered: false,
+            build: function build(dom) {
+              var el0 = dom.createDocumentFragment();
+              var el1 = dom.createTextNode("                ");
+              dom.appendChild(el0, el1);
+              var el1 = dom.createElement("div");
+              dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+              var el2 = dom.createTextNode("\n                  ");
+              dom.appendChild(el1, el2);
+              var el2 = dom.createElement("div");
+              dom.setAttribute(el2,"class","display-property");
+              var el3 = dom.createTextNode("\n                    Notes:\n                  ");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              var el2 = dom.createTextNode("\n                  ");
+              dom.appendChild(el1, el2);
+              var el2 = dom.createElement("div");
+              dom.setAttribute(el2,"class","display-value");
+              var el3 = dom.createTextNode("\n                    ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createComment("");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode(" \n                  ");
+              dom.appendChild(el2, el3);
+              dom.appendChild(el1, el2);
+              var el2 = dom.createTextNode("\n                ");
+              dom.appendChild(el1, el2);
+              dom.appendChild(el0, el1);
+              var el1 = dom.createTextNode("\n");
+              dom.appendChild(el0, el1);
+              return el0;
+            },
+            render: function render(context, env, contextualElement) {
+              var dom = env.dom;
+              var hooks = env.hooks, content = hooks.content;
+              dom.detectNamespace(contextualElement);
+              var fragment;
+              if (env.useFragmentCache && dom.canClone) {
+                if (this.cachedFragment === null) {
+                  fragment = this.build(dom);
+                  if (this.hasRendered) {
+                    this.cachedFragment = fragment;
+                  } else {
+                    this.hasRendered = true;
+                  }
+                }
+                if (this.cachedFragment) {
+                  fragment = dom.cloneNode(this.cachedFragment, true);
+                }
+              } else {
+                fragment = this.build(dom);
+              }
+              var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 3]),1,1);
+              content(env, morph0, context, "requiredTeachers.ageRange.notes");
+              return fragment;
+            }
+          };
+        }());
+        return {
+          isHTMLBars: true,
+          revision: "Ember@1.11.1",
+          blockParams: 0,
+          cachedFragment: null,
+          hasRendered: false,
+          build: function build(dom) {
+            var el0 = dom.createDocumentFragment();
+            var el1 = dom.createTextNode("\n              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-property");
+            var el3 = dom.createTextNode("\n                  Regulations:\n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-value");
+            var el3 = dom.createTextNode("\n                  ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" \n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n\n              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-property");
+            var el3 = dom.createTextNode("\n                  Teachers required:\n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-value");
+            var el3 = dom.createTextNode("\n                  ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" \n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n\n              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-property");
+            var el3 = dom.createTextNode("\n                  Qualifications:\n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-value");
+            var el3 = dom.createTextNode("\n                  ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" \n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n\n");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createComment("");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-property");
+            var el3 = dom.createTextNode("\n                  Min Square Ft:\n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-value");
+            var el3 = dom.createTextNode("\n                  ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" square feet \n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n\n");
+            dom.appendChild(el0, el1);
+            return el0;
+          },
+          render: function render(context, env, contextualElement) {
+            var dom = env.dom;
+            var hooks = env.hooks, content = hooks.content, get = hooks.get, block = hooks.block;
+            dom.detectNamespace(contextualElement);
+            var fragment;
+            if (env.useFragmentCache && dom.canClone) {
+              if (this.cachedFragment === null) {
+                fragment = this.build(dom);
+                if (this.hasRendered) {
+                  this.cachedFragment = fragment;
+                } else {
+                  this.hasRendered = true;
+                }
+              }
+              if (this.cachedFragment) {
+                fragment = dom.cloneNode(this.cachedFragment, true);
+              }
+            } else {
+              fragment = this.build(dom);
+            }
+            var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 3]),1,1);
+            var morph1 = dom.createMorphAt(dom.childAt(fragment, [3, 3]),1,1);
+            var morph2 = dom.createMorphAt(dom.childAt(fragment, [5, 3]),1,1);
+            var morph3 = dom.createMorphAt(fragment,7,7,contextualElement);
+            var morph4 = dom.createMorphAt(dom.childAt(fragment, [9, 3]),1,1);
+            content(env, morph0, context, "requiredTeachers.ageRange.regulationNumber");
+            content(env, morph1, context, "requiredTeachers.numberOfTeachersRequired");
+            content(env, morph2, context, "requiredTeachers.ageRange.educatorQualifications");
+            block(env, morph3, context, "if", [get(env, context, "requiredTeachers.ageRange.notes")], {}, child0, null);
+            content(env, morph4, context, "requiredTeachers.squareFootage");
+            return fragment;
+          }
+        };
+      }());
       return {
         isHTMLBars: true,
         revision: "Ember@1.11.1",
@@ -1660,23 +2380,52 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
           var el1 = dom.createTextNode("        ");
           dom.appendChild(el0, el1);
           var el1 = dom.createElement("div");
-          dom.setAttribute(el1,"class","number-of-teachers-required");
-          var el2 = dom.createTextNode("\n          ");
+          dom.setAttribute(el1,"class","teachers-required-output licensing-step-output");
+          var el2 = dom.createTextNode("\n\n          ");
           dom.appendChild(el1, el2);
-          var el2 = dom.createComment("");
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","inputs-display");
+          var el3 = dom.createTextNode("\n            ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","student-count-display inputs-display-input");
+          var el4 = dom.createTextNode("\n              ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createComment("");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode(" students\n            ");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n            ");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createElement("div");
+          dom.setAttribute(el3,"class","age-range-display inputs-display-input");
+          var el4 = dom.createTextNode("\n              ");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createComment("");
+          dom.appendChild(el3, el4);
+          var el4 = dom.createTextNode("\n            ");
+          dom.appendChild(el3, el4);
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n          ");
+          dom.appendChild(el2, el3);
           dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode(" teachers are required\n        ");
+          var el2 = dom.createTextNode("\n\n          ");
           dom.appendChild(el1, el2);
-          dom.appendChild(el0, el1);
-          var el1 = dom.createTextNode("\n        ");
-          dom.appendChild(el0, el1);
-          var el1 = dom.createElement("div");
-          dom.setAttribute(el1,"style","font-size:10px");
-          var el2 = dom.createTextNode("\n          ");
+          var el2 = dom.createElement("div");
+          dom.setAttribute(el2,"class","outputs-display");
+          var el3 = dom.createTextNode("\n\n");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("\n");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createComment("");
+          dom.appendChild(el2, el3);
+          var el3 = dom.createTextNode("          ");
+          dom.appendChild(el2, el3);
           dom.appendChild(el1, el2);
-          var el2 = dom.createElement("br");
-          dom.appendChild(el1, el2);
-          var el2 = dom.createTextNode("\n          NOTE: This algorithm not implemented. This is not the real number \n        ");
+          var el2 = dom.createTextNode("\n        ");
           dom.appendChild(el1, el2);
           dom.appendChild(el0, el1);
           var el1 = dom.createTextNode("\n");
@@ -1685,7 +2434,7 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         },
         render: function render(context, env, contextualElement) {
           var dom = env.dom;
-          var hooks = env.hooks, content = hooks.content;
+          var hooks = env.hooks, content = hooks.content, get = hooks.get, block = hooks.block;
           dom.detectNamespace(contextualElement);
           var fragment;
           if (env.useFragmentCache && dom.canClone) {
@@ -1703,8 +2452,17 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
           } else {
             fragment = this.build(dom);
           }
-          var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
-          content(env, morph0, context, "requiredTeachers");
+          var element0 = dom.childAt(fragment, [1]);
+          var element1 = dom.childAt(element0, [1]);
+          var element2 = dom.childAt(element0, [3]);
+          var morph0 = dom.createMorphAt(dom.childAt(element1, [1]),1,1);
+          var morph1 = dom.createMorphAt(dom.childAt(element1, [3]),1,1);
+          var morph2 = dom.createMorphAt(element2,1,1);
+          var morph3 = dom.createMorphAt(element2,3,3);
+          content(env, morph0, context, "requiredTeachers.studentCount");
+          content(env, morph1, context, "requiredTeachers.ageRange.ageRange");
+          block(env, morph2, context, "if", [get(env, context, "requiredTeachers.tooManyStudentsError")], {}, child0, null);
+          block(env, morph3, context, "unless", [get(env, context, "requiredTeachers.tooManyStudentsError")], {}, child1, null);
           return fragment;
         }
       };
@@ -1724,11 +2482,11 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         var el2 = dom.createTextNode("\n\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2,"class","teacher-requirements-header licensing-step-header");
+        dom.setAttribute(el2,"class","licensing-step-header");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("h2");
-        var el4 = dom.createTextNode("Step 1: Teacher Requirements");
+        var el4 = dom.createTextNode("Teacher and Building Requirements by Student Age and Number of Students");
         dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
         var el3 = dom.createTextNode("\n  ");
@@ -1737,7 +2495,7 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         var el2 = dom.createTextNode("\n\n  ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
-        dom.setAttribute(el2,"class","teacher-requirements-body licensing-step-body");
+        dom.setAttribute(el2,"class","licensing-step-body");
         var el3 = dom.createTextNode("\n\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
@@ -1745,7 +2503,7 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         var el4 = dom.createTextNode("\n\n      ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("div");
-        dom.setAttribute(el4,"class","studentAgeDropdownContainer licensing-step-input-container");
+        dom.setAttribute(el4,"class","licensing-step-input-container");
         var el5 = dom.createTextNode("\n        ");
         dom.appendChild(el4, el5);
         var el5 = dom.createElement("label");
@@ -1770,11 +2528,11 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         var el4 = dom.createTextNode("\n\n      ");
         dom.appendChild(el3, el4);
         var el4 = dom.createElement("div");
-        dom.setAttribute(el4,"class","studentAgeDropdownContainer licensing-step-input-container");
+        dom.setAttribute(el4,"class","licensing-step-input-container");
         var el5 = dom.createTextNode("\n        ");
         dom.appendChild(el4, el5);
         var el5 = dom.createElement("label");
-        dom.setAttribute(el5,"for","studentAgeDropdown");
+        dom.setAttribute(el5,"for","studentCountDropdown");
         var el6 = dom.createTextNode("\n          How many students do you have?\n        ");
         dom.appendChild(el5, el6);
         dom.appendChild(el4, el5);
@@ -1798,7 +2556,7 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         var el3 = dom.createTextNode("\n\n    ");
         dom.appendChild(el2, el3);
         var el3 = dom.createElement("div");
-        dom.setAttribute(el3,"class","licensing-step-output output-col");
+        dom.setAttribute(el3,"class","output-col");
         var el4 = dom.createTextNode("\n");
         dom.appendChild(el3, el4);
         var el4 = dom.createComment("");
@@ -1836,13 +2594,13 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         } else {
           fragment = this.build(dom);
         }
-        var element0 = dom.childAt(fragment, [1, 3]);
-        var element1 = dom.childAt(element0, [1]);
-        var morph0 = dom.createMorphAt(dom.childAt(element1, [1, 3]),1,1);
-        var morph1 = dom.createMorphAt(dom.childAt(element1, [3, 3]),1,1);
-        var morph2 = dom.createMorphAt(dom.childAt(element0, [3]),1,1);
+        var element3 = dom.childAt(fragment, [1, 3]);
+        var element4 = dom.childAt(element3, [1]);
+        var morph0 = dom.createMorphAt(dom.childAt(element4, [1, 3]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(element4, [3, 3]),1,1);
+        var morph2 = dom.createMorphAt(dom.childAt(element3, [3]),1,1);
         inline(env, morph0, context, "student-age-dropdown", [], {"id": "stuentAgeDropdown", "selectedStudentAge": get(env, context, "selectedStudentAge"), "action": "setStudentAge", "studentAgeRanges": get(env, context, "studentAgeRanges")});
-        inline(env, morph1, context, "student-count-dropdown", [], {"id": "stuentCountDropdown", "selectedStudentAge": get(env, context, "selectedStudentCount"), "action": "setStudentCount", "studentCounts": get(env, context, "studentCounts")});
+        inline(env, morph1, context, "student-count-dropdown", [], {"id": "studentCountDropdown", "selectedStudentAge": get(env, context, "selectedStudentCount"), "action": "setStudentCount", "studentCounts": get(env, context, "studentCounts")});
         block(env, morph2, context, "if", [get(env, context, "requiredTeachers")], {}, child0, null);
         return fragment;
       }
@@ -1920,7 +2678,7 @@ define('logo-maker/templates/jurisdiction/index', ['exports'], function (exports
         var el1 = dom.createTextNode("\n\n  ");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
-        dom.setAttribute(el1,"class","header");
+        dom.setAttribute(el1,"class","index-header");
         var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("h1");
@@ -1934,24 +2692,17 @@ define('logo-maker/templates/jurisdiction/index', ['exports'], function (exports
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n  ");
+        var el1 = dom.createTextNode("\n\n\n  ");
         dom.appendChild(el0, el1);
         var el1 = dom.createElement("div");
-        dom.setAttribute(el1,"class","step-by-step");
-        var el2 = dom.createTextNode("\n    Step-by-step guide to regulatory requirements \n  ");
+        dom.setAttribute(el1,"class","widget jurisdiction-selector");
+        var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n  ");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1,"class","get-started");
-        var el2 = dom.createTextNode("\n    Choose a state to get started\n  ");
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","get-started");
+        var el3 = dom.createTextNode("\n      Choose a state to get started\n    ");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n  ");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1,"class","widget");
         var el2 = dom.createTextNode("\n    ");
         dom.appendChild(el1, el2);
         var el2 = dom.createElement("div");
@@ -1991,7 +2742,7 @@ define('logo-maker/templates/jurisdiction/index', ['exports'], function (exports
           fragment = this.build(dom);
         }
         var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 1]),1,1);
-        var morph1 = dom.createMorphAt(dom.childAt(fragment, [7, 1]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(fragment, [3, 3]),1,1);
         content(env, morph0, context, "model.name");
         inline(env, morph1, context, "jurisdiction-dropdown", [], {"jurisdictions": get(env, context, "model"), "selectedJurisdiction": get(env, context, "selectedJurisdiction"), "action": "setJurisdiction"});
         return fragment;
@@ -2041,6 +2792,78 @@ define('logo-maker/templates/jurisdiction/view', ['exports'], function (exports)
         }
       };
     }());
+    var child1 = (function() {
+      return {
+        isHTMLBars: true,
+        revision: "Ember@1.11.1",
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("      Number of students by square footage\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          return fragment;
+        }
+      };
+    }());
+    var child2 = (function() {
+      return {
+        isHTMLBars: true,
+        revision: "Ember@1.11.1",
+        blockParams: 0,
+        cachedFragment: null,
+        hasRendered: false,
+        build: function build(dom) {
+          var el0 = dom.createDocumentFragment();
+          var el1 = dom.createTextNode("      Number of students by number of teachers and student age\n");
+          dom.appendChild(el0, el1);
+          return el0;
+        },
+        render: function render(context, env, contextualElement) {
+          var dom = env.dom;
+          dom.detectNamespace(contextualElement);
+          var fragment;
+          if (env.useFragmentCache && dom.canClone) {
+            if (this.cachedFragment === null) {
+              fragment = this.build(dom);
+              if (this.hasRendered) {
+                this.cachedFragment = fragment;
+              } else {
+                this.hasRendered = true;
+              }
+            }
+            if (this.cachedFragment) {
+              fragment = dom.cloneNode(this.cachedFragment, true);
+            }
+          } else {
+            fragment = this.build(dom);
+          }
+          return fragment;
+        }
+      };
+    }());
     return {
       isHTMLBars: true,
       revision: "Ember@1.11.1",
@@ -2055,35 +2878,88 @@ define('logo-maker/templates/jurisdiction/view', ['exports'], function (exports)
         dom.setAttribute(el1,"class","header");
         var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
-        var el2 = dom.createElement("h1");
+        var el2 = dom.createElement("div");
         var el3 = dom.createTextNode("\n    ");
         dom.appendChild(el2, el3);
-        var el3 = dom.createComment("");
+        var el3 = dom.createElement("h1");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode(" Licensing\n    ");
+        dom.appendChild(el3, el4);
         dom.appendChild(el2, el3);
-        var el3 = dom.createTextNode(" Licensing\n  ");
+        var el3 = dom.createTextNode("\n  ");
         dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
-        var el2 = dom.createTextNode("\n");
+        var el2 = dom.createTextNode("\n  ");
         dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("div");
-        dom.setAttribute(el1,"class","step-by-step");
-        var el2 = dom.createTextNode("\n  Step-by-step guide to regulatory requirements \n");
-        dom.appendChild(el1, el2);
-        dom.appendChild(el0, el1);
-        var el1 = dom.createTextNode("\n\n");
-        dom.appendChild(el0, el1);
-        var el1 = dom.createElement("p");
-        var el2 = dom.createTextNode("\n    ");
-        dom.appendChild(el1, el2);
-        var el2 = dom.createComment("");
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","to-jurisdiction-index");
+        var el3 = dom.createTextNode("\n    ");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createElement("p");
+        var el4 = dom.createTextNode("\n      ");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createComment("");
+        dom.appendChild(el3, el4);
+        var el4 = dom.createTextNode("\n    ");
+        dom.appendChild(el3, el4);
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("\n  ");
+        dom.appendChild(el2, el3);
         dom.appendChild(el1, el2);
         var el2 = dom.createTextNode("\n");
         dom.appendChild(el1, el2);
         dom.appendChild(el0, el1);
         var el1 = dom.createTextNode("\n\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createElement("div");
+        dom.setAttribute(el1,"class","scenario-selector");
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","scenarios-label");
+        var el3 = dom.createTextNode("\n    Scenarios\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","scenario-entry");
+        var el3 = dom.createTextNode("\n\n      Teacher requirements and square footage by student age and number of students\n\n  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","scenario-entry");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n  ");
+        dom.appendChild(el1, el2);
+        var el2 = dom.createElement("div");
+        dom.setAttribute(el2,"class","scenario-entry");
+        var el3 = dom.createTextNode("\n");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createComment("");
+        dom.appendChild(el2, el3);
+        var el3 = dom.createTextNode("  ");
+        dom.appendChild(el2, el3);
+        dom.appendChild(el1, el2);
+        var el2 = dom.createTextNode("\n\n");
+        dom.appendChild(el1, el2);
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n\n");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createComment("");
+        dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
@@ -2111,12 +2987,20 @@ define('logo-maker/templates/jurisdiction/view', ['exports'], function (exports)
         } else {
           fragment = this.build(dom);
         }
-        var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 1]),1,1);
-        var morph1 = dom.createMorphAt(dom.childAt(fragment, [5]),1,1);
-        var morph2 = dom.createMorphAt(fragment,7,7,contextualElement);
+        var element0 = dom.childAt(fragment, [1]);
+        var element1 = dom.childAt(fragment, [3]);
+        var morph0 = dom.createMorphAt(dom.childAt(element0, [1, 1]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(element0, [3, 1]),1,1);
+        var morph2 = dom.createMorphAt(dom.childAt(element1, [5]),1,1);
+        var morph3 = dom.createMorphAt(dom.childAt(element1, [7]),1,1);
+        var morph4 = dom.createMorphAt(fragment,5,5,contextualElement);
+        var morph5 = dom.createMorphAt(fragment,7,7,contextualElement);
         content(env, morph0, context, "model.name");
         block(env, morph1, context, "link-to", ["jurisdiction"], {}, child0, null);
-        inline(env, morph2, context, "teacher-requirements", [], {"model": get(env, context, "model")});
+        block(env, morph2, context, "link-to", ["jurisdiction.view", get(env, context, "model.id")], {}, child1, null);
+        block(env, morph3, context, "link-to", ["jurisdiction.view", get(env, context, "model.id")], {}, child2, null);
+        inline(env, morph4, context, "teacher-requirements", [], {"model": get(env, context, "model")});
+        inline(env, morph5, context, "num-students-by-sq-ft", [], {"model": get(env, context, "model")});
         return fragment;
       }
     };
@@ -2669,7 +3553,7 @@ define('logo-maker/tests/app.jshint', function () {
 
   module('JSHint - .');
   test('app.js should pass jshint', function() { 
-    ok(false, 'app.js should pass jshint.\napp.js: line 5, col 8, \'DS\' is defined but never used.\n\n1 error'); 
+    ok(true, 'app.js should pass jshint.'); 
   });
 
 });
@@ -2723,6 +3607,16 @@ define('logo-maker/tests/components/logo-view.jshint', function () {
   });
 
 });
+define('logo-maker/tests/components/num-students-by-sq-ft.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - components');
+  test('components/num-students-by-sq-ft.js should pass jshint', function() { 
+    ok(true, 'components/num-students-by-sq-ft.js should pass jshint.'); 
+  });
+
+});
 define('logo-maker/tests/components/palette-box.jshint', function () {
 
   'use strict';
@@ -2730,6 +3624,16 @@ define('logo-maker/tests/components/palette-box.jshint', function () {
   module('JSHint - components');
   test('components/palette-box.js should pass jshint', function() { 
     ok(true, 'components/palette-box.js should pass jshint.'); 
+  });
+
+});
+define('logo-maker/tests/components/sqft-dropdown.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - components');
+  test('components/sqft-dropdown.js should pass jshint', function() { 
+    ok(true, 'components/sqft-dropdown.js should pass jshint.'); 
   });
 
 });
@@ -2837,6 +3741,16 @@ define('logo-maker/tests/helpers/start-app.jshint', function () {
   module('JSHint - helpers');
   test('helpers/start-app.js should pass jshint', function() { 
     ok(true, 'helpers/start-app.js should pass jshint.'); 
+  });
+
+});
+define('logo-maker/tests/models/MA.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - models');
+  test('models/MA.js should pass jshint', function() { 
+    ok(true, 'models/MA.js should pass jshint.'); 
   });
 
 });
@@ -2986,6 +3900,70 @@ define('logo-maker/tests/unit/components/font-dropdown-test.jshint', function ()
   module('JSHint - unit/components');
   test('unit/components/font-dropdown-test.js should pass jshint', function() { 
     ok(true, 'unit/components/font-dropdown-test.js should pass jshint.'); 
+  });
+
+});
+define('logo-maker/tests/unit/components/num-students-by-sq-ft-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleForComponent('num-students-by-sq-ft', {});
+
+  ember_qunit.test('it renders', function (assert) {
+    assert.expect(2);
+
+    // Creates the component instance
+    var component = this.subject();
+    assert.equal(component._state, 'preRender');
+
+    // Renders the component to the page
+    this.render();
+    assert.equal(component._state, 'inDOM');
+  });
+
+  // Specify the other units that are required for this test
+  // needs: ['component:foo', 'helper:bar']
+
+});
+define('logo-maker/tests/unit/components/num-students-by-sq-ft-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - unit/components');
+  test('unit/components/num-students-by-sq-ft-test.js should pass jshint', function() { 
+    ok(true, 'unit/components/num-students-by-sq-ft-test.js should pass jshint.'); 
+  });
+
+});
+define('logo-maker/tests/unit/components/sqft-dropdown-test', ['ember-qunit'], function (ember_qunit) {
+
+  'use strict';
+
+  ember_qunit.moduleForComponent('sqft-dropdown', {});
+
+  ember_qunit.test('it renders', function (assert) {
+    assert.expect(2);
+
+    // Creates the component instance
+    var component = this.subject();
+    assert.equal(component._state, 'preRender');
+
+    // Renders the component to the page
+    this.render();
+    assert.equal(component._state, 'inDOM');
+  });
+
+  // Specify the other units that are required for this test
+  // needs: ['component:foo', 'helper:bar']
+
+});
+define('logo-maker/tests/unit/components/sqft-dropdown-test.jshint', function () {
+
+  'use strict';
+
+  module('JSHint - unit/components');
+  test('unit/components/sqft-dropdown-test.js should pass jshint', function() { 
+    ok(true, 'unit/components/sqft-dropdown-test.js should pass jshint.'); 
   });
 
 });
@@ -3236,7 +4214,7 @@ catch(err) {
 if (runningTests) {
   require("logo-maker/tests/test-helper");
 } else {
-  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.304e6e8c"});
+  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.d759eeff"});
 }
 
 /* jshint ignore:end */
