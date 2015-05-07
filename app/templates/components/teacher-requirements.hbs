@@ -1,15 +1,15 @@
 
 <div class="teacher-requirements licensing-step">
 
-  <div class="teacher-requirements-header licensing-step-header">
-    <h2>Step 1: Teacher Requirements</h2>
+  <div class="licensing-step-header">
+    <h2>Teacher and Building Requirements by Student Age and Number of Students</h2>
   </div>
 
-  <div class="teacher-requirements-body licensing-step-body">
+  <div class="licensing-step-body">
 
     <div class="licensing-step-input input-col">
 
-      <div class="studentAgeDropdownContainer licensing-step-input-container">
+      <div class="licensing-step-input-container">
         <label for="studentAgeDropdown">
           What age are your students?
         </label>
@@ -24,14 +24,14 @@
         </div>
       </div>
 
-      <div class="studentAgeDropdownContainer licensing-step-input-container">
-        <label for="studentAgeDropdown">
+      <div class="licensing-step-input-container">
+        <label for="studentCountDropdown">
           How many students do you have?
         </label>
         <div class="box box--flush dropdown licensing-step-control">
           {{
             student-count-dropdown
-            id = 'stuentCountDropdown'
+            id = 'studentCountDropdown'
             selectedStudentAge=selectedStudentCount
             action = 'setStudentCount'
             studentCounts = studentCounts
@@ -41,14 +41,78 @@
 
     </div>
 
-    <div class="licensing-step-output output-col">
-      {{#if requiredTeachers}}
-        <div class="number-of-teachers-required">
-          {{ requiredTeachers }} teachers are required
-        </div>
-        <div style="font-size:10px">
-          <br>
-          NOTE: This algorithm not implemented. This is not the real number 
+    <div class="output-col">
+      {{#if requiredTeachers }}
+        <div class="teachers-required-output licensing-step-output">
+
+          <div class="inputs-display">
+            <div class="student-count-display inputs-display-input">
+              {{ requiredTeachers.studentCount }} students
+            </div>
+            <div class="age-range-display inputs-display-input">
+              {{ requiredTeachers.ageRange.ageRange }}
+            </div>
+          </div>
+
+          <div class="outputs-display">
+
+            {{#if requiredTeachers.tooManyStudentsError }}
+              <div class="display-entry error-message">
+                Exceeds maximum group size of {{ requiredTeachers.ageRange.maxGroupSize }}
+              </div>
+            {{/if}}
+
+            {{#unless requiredTeachers.tooManyStudentsError }}
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Regulations:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.ageRange.regulationNumber }} 
+                </div>
+              </div>
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Teachers required:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.numberOfTeachersRequired }} 
+                </div>
+              </div>
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Qualifications:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.ageRange.educatorQualifications }} 
+                </div>
+              </div>
+
+              {{#if requiredTeachers.ageRange.notes }}
+                <div class="number-of-teachers-required display-entry">
+                  <div class="display-property">
+                    Notes:
+                  </div>
+                  <div class="display-value">
+                    {{ requiredTeachers.ageRange.notes }} 
+                  </div>
+                </div>
+              {{/if}}
+
+              <div class="number-of-teachers-required display-entry">
+                <div class="display-property">
+                  Min Square Ft:
+                </div>
+                <div class="display-value">
+                  {{ requiredTeachers.squareFootage }} square feet 
+                </div>
+              </div>
+
+            {{/unless}}
+          </div>
         </div>
       {{/if}}
     </div>

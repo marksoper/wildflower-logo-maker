@@ -1,10 +1,32 @@
 import Ember from 'ember';
+import MA from '../models/MA';
 
-var calculateRequiredTeachers = function(studentAge, studentCount) {
-  if (studentAge && studentCount) {
-    return studentAge.id * 2 + studentCount.id;
+var calculateSquareFootage = function(studentCount) {
+  return 50 * studentCount;
+};
+
+var calculateRequiredTeachers = function(ageRange, studentCount) {
+  if (!ageRange || !studentCount) {
+    return null;
   }
-  return null;
+  var tooManyStudentsError;
+  var numberOfTeachersRequired;
+  if (studentCount > ageRange.maxGroupSize) {
+    tooManyStudentsError = true;
+  } else {
+    ageRange.educatorsRequiredPerNumberOfChildren.forEach(function(range) {
+      if (studentCount >= range[0][0] && studentCount <= range[0][1]) {
+        numberOfTeachersRequired = range[1];
+      }
+    });
+  }
+  return {
+    ageRange: ageRange,
+    studentCount: studentCount,
+    tooManyStudentsError: tooManyStudentsError,
+    numberOfTeachersRequired: numberOfTeachersRequired,
+    squareFootage: calculateSquareFootage(studentCount)
+  };
 };
 
 export default Ember.Component.extend({
@@ -12,31 +34,18 @@ export default Ember.Component.extend({
   actions: {
     setStudentAge: function(studentAge) {
       this.set('studentAge', studentAge);
-      this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+      if (this.studentAge && this.studentCount) {
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+      }
     },
     setStudentCount: function(studentCount) {
       this.set('studentCount', studentCount);
-      this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount));
+      if (this.studentAge && this.studentCount) {
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+      }
     }
   },
-  studentAgeRanges: [
-    {
-      id: "1",
-      value: "0-3"
-    },
-    {
-      id: "2",
-      value: "3-6"
-    },
-    {
-      id: "3",
-      value: "6-9"
-    },
-    {
-      id: "4",
-      value: "9-12"
-    }
-  ],
+  studentAgeRanges: MA.ageRanges,
   studentCounts: (function() {
     var counts = [];
     var i = 1;

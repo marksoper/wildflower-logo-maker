@@ -1,16 +1,47 @@
 .licensing {
-  padding: 20px 50px;
+  padding:0 20px;
   width: 100%;
-  max-width: 800px;
-  .step-by-step {
-    margin-bottom: 25px;
+  max-width: 1200px;
+  min-width: 720px;
+
+  .header, .scenario-selector, .licensing-step, .jurisdiction-selector, .index-header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left:60px;
+    padding-right:60px;
+    border-bottom: 1px solid #eee;
   }
+  .header {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    .to-jurisdiction-index {
+      padding-top: 20px;
+      padding-left: 50px;
+      margin-left: auto;
+    }
+  }
+
   .get-started {
     margin-bottom: 15px;
     font-size: 14px;
     font-weight: bold;
   }
+  .error-message {
+    color: red;
+  }
+  .scenario-selector {
+
+    .scenarios-label {
+      font-weight: bold;
+    }
+    .scenario-entry {
+      margin: 10px 0;
+    }
+  }
   .licensing-step {
+    padding-bottom: 40px;
     .licensing-step-body {
       display: -webkit-box;
       display: -moz-box;
@@ -18,21 +49,57 @@
       display: flex;
     }
     .licensing-step-input-container {
+      label {
+        font-weight: bold;
+        font-size: 14px;
+      }
       margin-bottom: 10px;
     }
     .licensing-step-control {
       margin-top: 5px;
     }
     .licensing-step-output {
-      font-size: 24px;
+      border: 1px solid #ccc;
+      background-color: #fafafa;
+      padding: 20px;
+      border-radius: 4px;
+      .input-display: {
+        margin-bottom: 10px;
+        border-bottom: 1px solid #aaa;  
+      }
     }
   }
   .input-col {
-    width: 50%;
+    width: 35%;
     padding-right: 10px;
   }
   .output-col {
-    width: 50%;
+    width: 65%;
     padding-left: 10px;
   }
+
+  .inputs-display-input, .display-entry {
+    border: 1px solid #eee;
+    margin: 5px 0;
+    padding: 5px 10px;
+  }
+
+  .display-entry {
+    margin: 10px 0;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    .display-property {
+      width: 40%;
+      min-width: 160px;
+      max-width: 240px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .display-value {
+
+    }
+  }
+
 }
