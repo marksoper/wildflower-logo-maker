@@ -17,6 +17,8 @@
     display: -ms-flexbox;
     display: flex;
     .to-jurisdiction-index {
+      padding-top: 20px;
+      padding-left: 50px;
       margin-left: auto;
     }
   }
@@ -40,6 +42,7 @@
     }
   }
   .licensing-step {
+    padding-bottom: 40px;
     .licensing-step-body {
       display: -webkit-box;
       display: -moz-box;
