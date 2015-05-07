@@ -5,13 +5,36 @@
   </h1>
 </div>
 
-<div class="step-by-step">
-  Step-by-step guide to regulatory requirements 
-</div>
-
 <p>
     {{#link-to 'jurisdiction'}}Choose a different State{{/link-to}}
 </p>
+
+<div class="scenario-selector">
+
+  <div class="scenarios-label">
+    Scenarios
+  </div>
+
+  <div class="scenario-entry">
+
+      Teacher requirements and square footage by student age and number of students
+
+  </div>
+
+  <div class="scenario-entry">
+    {{#link-to 'jurisdiction.view' model.id }}
+      Number of students by square footage
+    {{/link-to}}
+  </div>
+
+  <div class="scenario-entry">
+    {{#link-to 'jurisdiction.view' model.id }}
+      Number of students by number of teachers and student age
+    {{/link-to}}
+  </div>
+
+</div>
+
 
 
 {{

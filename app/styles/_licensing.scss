@@ -3,9 +3,6 @@
   width: 100%;
   max-width: 1200px;
   min-width: 480px;
-  .step-by-step {
-    margin-bottom: 25px;
-  }
   .get-started {
     margin-bottom: 15px;
     font-size: 14px;
@@ -13,6 +10,15 @@
   }
   .error-message {
     color: red;
+  }
+  .scenario-selector {
+    margin: 40px 0 40px 0;
+    .scenarios-label {
+      font-weight: bold;
+    }
+    .scenario-entry {
+      margin: 10px 0;
+    }
   }
   .licensing-step {
     .licensing-step-body {
