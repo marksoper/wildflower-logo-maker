@@ -1,8 +1,27 @@
 .licensing {
-  padding: 20px 50px;
+  padding:0 20px;
   width: 100%;
   max-width: 1200px;
-  min-width: 480px;
+  min-width: 720px;
+
+  .header, .scenario-selector, .licensing-step {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left:80px;
+    padding-right:80px;
+    border-bottom: 1px solid #eee;
+  }
+  .header {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    .to-jurisdiction-index {
+      margin-left: auto;
+    }
+  }
+
+
   .get-started {
     margin-bottom: 15px;
     font-size: 14px;
@@ -12,7 +31,7 @@
     color: red;
   }
   .scenario-selector {
-    margin: 40px 0 40px 0;
+
     .scenarios-label {
       font-weight: bold;
     }
@@ -49,11 +68,11 @@
     }
   }
   .input-col {
-    width: 40%;
+    width: 35%;
     padding-right: 10px;
   }
   .output-col {
-    width: 60%;
+    width: 65%;
     padding-left: 10px;
   }
 
