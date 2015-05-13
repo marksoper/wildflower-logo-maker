@@ -367,7 +367,7 @@ define('logo-maker/components/teacher-requirements', ['exports', 'ember', 'logo-
     return 50 * studentCount;
   };
 
-  var calculateRequiredTeachers = function calculateRequiredTeachers(ageRange, studentCount) {
+  var calculateRequiredTeachers = function calculateRequiredTeachers(ageRange, studentCount, licensedCapacity) {
     if (!ageRange || !studentCount) {
       return null;
     }
@@ -383,27 +383,57 @@ define('logo-maker/components/teacher-requirements', ['exports', 'ember', 'logo-
       });
     }
     return {
-      ageRange: ageRange,
       studentCount: studentCount,
       tooManyStudentsError: tooManyStudentsError,
       numberOfTeachersRequired: numberOfTeachersRequired,
-      squareFootage: calculateSquareFootage(studentCount)
+      squareFootage: calculateSquareFootage(studentCount),
+      administrator: calculateAdministrator(ageRange, licensedCapacity, studentCount)
     };
   };
 
+  var calculateAdministrator = function calculateAdministrator(ageRange, licensedCapacity, studentCount) {
+    var administratorData;
+    var lc;
+    for (var i = 0; i < licensedCapacity.length; i++) {
+      lc = licensedCapacity[i];
+      if (lc.ageRanges.indexOf(ageRange.id) >= 0) {
+        if (studentCount >= lc.capacity[0] && studentCount <= lc.capacity[1]) {
+          administratorData = lc;
+        }
+      }
+      if (administratorData) {
+        break;
+      }
+    }
+    return administratorData;
+  };
+
   exports['default'] = Ember['default'].Component.extend({
+    //
+    // TODO: make actions more DRY
+    // TODO: handling of notes is pretty hacky
+    //
     requiredTeachers: null,
     actions: {
       setStudentAge: function setStudentAge(studentAge) {
         this.set('studentAge', studentAge);
+        if (this.studentAge.notes) {
+          this.set('notes', true);
+        }
         if (this.studentAge && this.studentCount) {
-          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value, MA['default'].licensedCapacity));
+          if (this.requiredTeachers.administrator && this.requiredTeachers.administrator.notes) {
+            this.set('notes', true);
+          }
         }
       },
       setStudentCount: function setStudentCount(studentCount) {
         this.set('studentCount', studentCount);
         if (this.studentAge && this.studentCount) {
-          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+          this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value, MA['default'].licensedCapacity));
+        }
+        if (this.requiredTeachers.administrator && this.requiredTeachers.administrator.notes) {
+          this.set('notes', true);
         }
       }
     },
@@ -611,8 +641,59 @@ define('logo-maker/models/MA', ['exports'], function (exports) {
     educatorQualifications: "Group Leader, per 606 CMR 7.09(19)(a)2"
   }];
 
+  var licensedCapacity = [{
+    id: 0,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (a)",
+    licensedCapacityDisplay: "No more than ten infant-school-age",
+    capacity: [1, 10],
+    ageRanges: [0, 1, 2, 3],
+    requiredNonTeachingAdminTime: "0",
+    administratorQualifications: "Family Child Care Provider or Teacher or Site Coordinator"
+  }, {
+    id: 1,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (b)",
+    licensedCapacityDisplay: "11 through 13 infant-preschool",
+    capacity: [11, 13],
+    ageRanges: [0, 1, 2, 3],
+    requiredNonTeachingAdminTime: "0",
+    administratorQualifications: "Lead Teacher"
+  }, {
+    id: 2,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (d)",
+    licensedCapacityDisplay: "14 through 26 infant-preschool",
+    capacity: [14, 26],
+    ageRanges: [0, 1, 2, 3],
+    requiredNonTeachingAdminTime: "0",
+    administratorQualifications: "Director I",
+    notes: "Director I is required for 4 or more hours of operation per day. Less than 4 hours of operation per day requires Lead Teacher."
+  }, {
+    id: 3,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (e)",
+    licensedCapacityDisplay: "27 through 39 infant-preschool",
+    capacity: [27, 39],
+    ageRanges: [0, 1, 2, 3],
+    requiredNonTeachingAdminTime: "50% FTE",
+    administratorQualifications: "Director I"
+  }
+  //
+  // TODO: where is kindgergarten in this list ?
+  //
+  /*
+  {
+    id: 4,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (h)",
+    licensedCapacityDisplay: "11 through 52 school age children",
+    capacity: [11,52],
+    ageRanges: [2,3],
+    requiredNonTeachingAdminTime: "20% FTE",
+    administratorQualifications: "School Age Administrator"
+  }
+  */
+  ];
+
   exports['default'] = {
-    ageRanges: ageRanges
+    ageRanges: ageRanges,
+    licensedCapacity: licensedCapacity
   };
 
 });
@@ -636,20 +717,13 @@ define('logo-maker/models/font', ['exports', 'ember-data'], function (exports, D
     });
 
 });
-define('logo-maker/models/jurisdiction', ['exports', 'ember-data', 'logo-maker/models/MA'], function (exports, DS, MA) {
+define('logo-maker/models/jurisdiction', ['exports', 'ember-data'], function (exports, DS) {
 
   'use strict';
 
   var Jurisdiction = DS['default'].Model.extend({
     name: DS['default'].attr('string')
   });
-
-  var createFixedAgeGroupQualifications = function createFixedAgeGroupQualifications(stateName) {
-    if (stateName !== 'Massachusetts') {
-      return null;
-    }
-    return MA['default'].ageRanges;
-  };
 
   var createJurisdictionFixtures = function createJurisdictionFixtures() {
     var usaStates = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'District Of Columbia', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
@@ -660,9 +734,6 @@ define('logo-maker/models/jurisdiction', ['exports', 'ember-data', 'logo-maker/m
         name: stateName,
         bogus: 'foo'
       };
-      if (stateName === 'Massachusetts') {
-        jd.ageRanges = createFixedAgeGroupQualifications(stateName);
-      }
       jurisdictions.push(jd);
     });
     return jurisdictions;
@@ -2149,7 +2220,7 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
               fragment = this.build(dom);
             }
             var morph0 = dom.createMorphAt(dom.childAt(fragment, [1]),1,1);
-            content(env, morph0, context, "requiredTeachers.ageRange.maxGroupSize");
+            content(env, morph0, context, "studentAge.maxGroupSize");
             return fragment;
           }
         };
@@ -2181,9 +2252,25 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
               dom.setAttribute(el2,"class","display-value");
               var el3 = dom.createTextNode("\n                    ");
               dom.appendChild(el2, el3);
-              var el3 = dom.createComment("");
+              var el3 = dom.createElement("div");
+              var el4 = dom.createTextNode("\n                      ");
+              dom.appendChild(el3, el4);
+              var el4 = dom.createComment("");
+              dom.appendChild(el3, el4);
+              var el4 = dom.createTextNode("\n                    ");
+              dom.appendChild(el3, el4);
               dom.appendChild(el2, el3);
-              var el3 = dom.createTextNode(" \n                  ");
+              var el3 = dom.createTextNode("\n                    ");
+              dom.appendChild(el2, el3);
+              var el3 = dom.createElement("div");
+              var el4 = dom.createTextNode("\n                      ");
+              dom.appendChild(el3, el4);
+              var el4 = dom.createComment("");
+              dom.appendChild(el3, el4);
+              var el4 = dom.createTextNode("\n                    ");
+              dom.appendChild(el3, el4);
+              dom.appendChild(el2, el3);
+              var el3 = dom.createTextNode("\n                  ");
               dom.appendChild(el2, el3);
               dom.appendChild(el1, el2);
               var el2 = dom.createTextNode("\n                ");
@@ -2213,8 +2300,11 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
               } else {
                 fragment = this.build(dom);
               }
-              var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 3]),1,1);
-              content(env, morph0, context, "requiredTeachers.ageRange.notes");
+              var element0 = dom.childAt(fragment, [1, 3]);
+              var morph0 = dom.createMorphAt(dom.childAt(element0, [1]),1,1);
+              var morph1 = dom.createMorphAt(dom.childAt(element0, [3]),1,1);
+              content(env, morph0, context, "studentAge.notes");
+              content(env, morph1, context, "requiredTeachers.administrator.notes");
               return fragment;
             }
           };
@@ -2285,7 +2375,32 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
             dom.appendChild(el1, el2);
             var el2 = dom.createElement("div");
             dom.setAttribute(el2,"class","display-property");
-            var el3 = dom.createTextNode("\n                  Qualifications:\n                ");
+            var el3 = dom.createTextNode("\n                  Educator Qualifications:\n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-value");
+            var el3 = dom.createTextNode("\n                  ");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createComment("");
+            dom.appendChild(el2, el3);
+            var el3 = dom.createTextNode(" \n                ");
+            dom.appendChild(el2, el3);
+            dom.appendChild(el1, el2);
+            var el2 = dom.createTextNode("\n              ");
+            dom.appendChild(el1, el2);
+            dom.appendChild(el0, el1);
+            var el1 = dom.createTextNode("\n\n\n              ");
+            dom.appendChild(el0, el1);
+            var el1 = dom.createElement("div");
+            dom.setAttribute(el1,"class","number-of-teachers-required display-entry");
+            var el2 = dom.createTextNode("\n                ");
+            dom.appendChild(el1, el2);
+            var el2 = dom.createElement("div");
+            dom.setAttribute(el2,"class","display-property");
+            var el3 = dom.createTextNode("\n                  Admin Qualifications:\n                ");
             dom.appendChild(el2, el3);
             dom.appendChild(el1, el2);
             var el2 = dom.createTextNode("\n                ");
@@ -2358,13 +2473,15 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
             var morph0 = dom.createMorphAt(dom.childAt(fragment, [1, 3]),1,1);
             var morph1 = dom.createMorphAt(dom.childAt(fragment, [3, 3]),1,1);
             var morph2 = dom.createMorphAt(dom.childAt(fragment, [5, 3]),1,1);
-            var morph3 = dom.createMorphAt(fragment,7,7,contextualElement);
-            var morph4 = dom.createMorphAt(dom.childAt(fragment, [9, 3]),1,1);
-            content(env, morph0, context, "requiredTeachers.ageRange.regulationNumber");
+            var morph3 = dom.createMorphAt(dom.childAt(fragment, [7, 3]),1,1);
+            var morph4 = dom.createMorphAt(fragment,9,9,contextualElement);
+            var morph5 = dom.createMorphAt(dom.childAt(fragment, [11, 3]),1,1);
+            content(env, morph0, context, "studentAge.regulationNumber");
             content(env, morph1, context, "requiredTeachers.numberOfTeachersRequired");
-            content(env, morph2, context, "requiredTeachers.ageRange.educatorQualifications");
-            block(env, morph3, context, "if", [get(env, context, "requiredTeachers.ageRange.notes")], {}, child0, null);
-            content(env, morph4, context, "requiredTeachers.squareFootage");
+            content(env, morph2, context, "studentAge.educatorQualifications");
+            content(env, morph3, context, "requiredTeachers.administrator.administratorQualifications");
+            block(env, morph4, context, "if", [get(env, context, "notes")], {}, child0, null);
+            content(env, morph5, context, "requiredTeachers.squareFootage");
             return fragment;
           }
         };
@@ -2452,15 +2569,15 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
           } else {
             fragment = this.build(dom);
           }
-          var element0 = dom.childAt(fragment, [1]);
-          var element1 = dom.childAt(element0, [1]);
-          var element2 = dom.childAt(element0, [3]);
-          var morph0 = dom.createMorphAt(dom.childAt(element1, [1]),1,1);
-          var morph1 = dom.createMorphAt(dom.childAt(element1, [3]),1,1);
-          var morph2 = dom.createMorphAt(element2,1,1);
-          var morph3 = dom.createMorphAt(element2,3,3);
+          var element1 = dom.childAt(fragment, [1]);
+          var element2 = dom.childAt(element1, [1]);
+          var element3 = dom.childAt(element1, [3]);
+          var morph0 = dom.createMorphAt(dom.childAt(element2, [1]),1,1);
+          var morph1 = dom.createMorphAt(dom.childAt(element2, [3]),1,1);
+          var morph2 = dom.createMorphAt(element3,1,1);
+          var morph3 = dom.createMorphAt(element3,3,3);
           content(env, morph0, context, "requiredTeachers.studentCount");
-          content(env, morph1, context, "requiredTeachers.ageRange.ageRange");
+          content(env, morph1, context, "studentAge.ageRange");
           block(env, morph2, context, "if", [get(env, context, "requiredTeachers.tooManyStudentsError")], {}, child0, null);
           block(env, morph3, context, "unless", [get(env, context, "requiredTeachers.tooManyStudentsError")], {}, child1, null);
           return fragment;
@@ -2594,11 +2711,11 @@ define('logo-maker/templates/components/teacher-requirements', ['exports'], func
         } else {
           fragment = this.build(dom);
         }
-        var element3 = dom.childAt(fragment, [1, 3]);
-        var element4 = dom.childAt(element3, [1]);
-        var morph0 = dom.createMorphAt(dom.childAt(element4, [1, 3]),1,1);
-        var morph1 = dom.createMorphAt(dom.childAt(element4, [3, 3]),1,1);
-        var morph2 = dom.createMorphAt(dom.childAt(element3, [3]),1,1);
+        var element4 = dom.childAt(fragment, [1, 3]);
+        var element5 = dom.childAt(element4, [1]);
+        var morph0 = dom.createMorphAt(dom.childAt(element5, [1, 3]),1,1);
+        var morph1 = dom.createMorphAt(dom.childAt(element5, [3, 3]),1,1);
+        var morph2 = dom.createMorphAt(dom.childAt(element4, [3]),1,1);
         inline(env, morph0, context, "student-age-dropdown", [], {"id": "stuentAgeDropdown", "selectedStudentAge": get(env, context, "selectedStudentAge"), "action": "setStudentAge", "studentAgeRanges": get(env, context, "studentAgeRanges")});
         inline(env, morph1, context, "student-count-dropdown", [], {"id": "studentCountDropdown", "selectedStudentAge": get(env, context, "selectedStudentCount"), "action": "setStudentCount", "studentCounts": get(env, context, "studentCounts")});
         block(env, morph2, context, "if", [get(env, context, "requiredTeachers")], {}, child0, null);
@@ -4214,7 +4331,7 @@ catch(err) {
 if (runningTests) {
   require("logo-maker/tests/test-helper");
 } else {
-  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.d759eeff"});
+  require("logo-maker/app")["default"].create({"LOG_ACTIVE_GENERATION":true,"LOG_VIEW_LOOKUPS":true,"name":"logo-maker","version":"0.0.0.20df650c"});
 }
 
 /* jshint ignore:end */
