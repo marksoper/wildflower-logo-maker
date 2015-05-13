@@ -1,12 +1,4 @@
 
-var fixedAgeGroups = [
-  {
-    id: 0,
-    groupName: "Infants",
-    ageRangeDisplay: "Up to 15 months old"
-  }
-];
-
 var ageRanges = [
   {
     id: 0,
@@ -53,6 +45,7 @@ var ageRanges = [
 
 var licensedCapacity = [
   {
+    id: 0,
     regulationNumber: "606 CMR 7.04(17)(m)9 (a)",
     licensedCapacityDisplay: "No more than ten infant-school-age",
     capacity: [1,10],
@@ -61,53 +54,47 @@ var licensedCapacity = [
     administratorQualifications: "Family Child Care Provider or Teacher or Site Coordinator" 
   },
   {
+    id: 1,
     regulationNumber: "606 CMR 7.04(17)(m)9 (b)",
     licensedCapacityDisplay: "11 through 13 infant-preschool",
     capacity: [11,13],
-    ageRanges: [0,1],
+    ageRanges: [0,1,2,3],
     requiredNonTeachingAdminTime: "0",
     administratorQualifications: "Lead Teacher" 
   },
   {
+    id: 2,
     regulationNumber: "606 CMR 7.04(17)(m)9 (d)",
     licensedCapacityDisplay: "14 through 26 infant-preschool",
     capacity: [14,26],
-    ageRanges: [0,1],
+    ageRanges: [0,1,2,3],
     requiredNonTeachingAdminTime: "0",
+    administratorQualifications: "Director I",
+    notes: "Director I is required for 4 or more hours of operation per day. Less than 4 hours of operation per day requires Lead Teacher."
+  },
+  {
+    id: 3,
+    regulationNumber: "606 CMR 7.04(17)(m)9 (e)",
+    licensedCapacityDisplay: "27 through 39 infant-preschool",
+    capacity: [27,39],
+    ageRanges: [0,1,2,3],
+    requiredNonTeachingAdminTime: "50% FTE",
     administratorQualifications: "Director I"
-  },
+  }
+  //
+  // TODO: where is kindgergarten in this list ?
+  //
+  /*
   {
-    regulationNumber: "606 CMR 7.04(17)(m)9 (f)",
-    licensedCapacityDisplay: "40 through 79 infant-preschool",
-    capacity: [40,79],
-    ageRanges: [0,1],
-    requiredNonTeachingAdminTime: "100% FTE",
-    administratorQualifications: "Director I"
-  },
-  {
-    regulationNumber: "606 CMR 7.04(17)(m)9 (g)",
-    licensedCapacityDisplay: "40 through 79 infant-preschool",
-    capacity: [80,Infinity],
-    ageRanges: [0,1],
-    requiredNonTeachingAdminTime: "100% FTE",
-    administratorQualifications: "Director II"
-  },
-  {
+    id: 4,
     regulationNumber: "606 CMR 7.04(17)(m)9 (h)",
     licensedCapacityDisplay: "11 through 52 school age children",
     capacity: [11,52],
     ageRanges: [2,3],
     requiredNonTeachingAdminTime: "20% FTE",
     administratorQualifications: "School Age Administrator"
-  },
-  {
-    regulationNumber: "606 CMR 7.04(17)(m)9 (h)",
-    licensedCapacityDisplay: "11 through 52 school age children",
-    capacity: [53,Infinity],
-    ageRanges: [2,3],
-    requiredNonTeachingAdminTime: "100% FTE",
-    administratorQualifications: "School Age Administrator"
   }
+  */
 ];
 
 export default {

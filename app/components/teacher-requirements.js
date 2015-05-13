@@ -5,7 +5,7 @@ var calculateSquareFootage = function(studentCount) {
   return 50 * studentCount;
 };
 
-var calculateRequiredTeachers = function(ageRange, studentCount) {
+var calculateRequiredTeachers = function(ageRange, studentCount, licensedCapacity) {
   if (!ageRange || !studentCount) {
     return null;
   }
@@ -21,27 +21,57 @@ var calculateRequiredTeachers = function(ageRange, studentCount) {
     });
   }
   return {
-    ageRange: ageRange,
     studentCount: studentCount,
     tooManyStudentsError: tooManyStudentsError,
     numberOfTeachersRequired: numberOfTeachersRequired,
-    squareFootage: calculateSquareFootage(studentCount)
+    squareFootage: calculateSquareFootage(studentCount),
+    administrator: calculateAdministrator(ageRange, licensedCapacity, studentCount)
   };
 };
 
+var calculateAdministrator= function(ageRange, licensedCapacity, studentCount) {
+  var administratorData;
+  var lc;
+  for (var i=0; i<licensedCapacity.length; i++) {
+    lc = licensedCapacity[i];
+    if (lc.ageRanges.indexOf(ageRange.id) >= 0) {
+      if (studentCount >= lc.capacity[0] && studentCount <= lc.capacity[1]) {
+        administratorData = lc;
+      }
+    }
+    if (administratorData) {
+      break;
+    }
+  }
+  return administratorData;
+};
+
 export default Ember.Component.extend({
+  //
+  // TODO: make actions more DRY
+  // TODO: handling of notes is pretty hacky
+  //
   requiredTeachers: null,
   actions: {
     setStudentAge: function(studentAge) {
       this.set('studentAge', studentAge);
+      if (this.studentAge.notes) {
+        this.set('notes', true);
+      }
       if (this.studentAge && this.studentCount) {
-        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value, MA.licensedCapacity));
+        if (this.requiredTeachers.administrator && this.requiredTeachers.administrator.notes) {
+          this.set('notes', true);
+        }
       }
     },
     setStudentCount: function(studentCount) {
       this.set('studentCount', studentCount);
       if (this.studentAge && this.studentCount) {
-        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value));
+        this.set('requiredTeachers', calculateRequiredTeachers(this.studentAge, this.studentCount.value, MA.licensedCapacity));
+      }
+      if (this.requiredTeachers.administrator && this.requiredTeachers.administrator.notes) {
+        this.set('notes', true);
       }
     }
   },

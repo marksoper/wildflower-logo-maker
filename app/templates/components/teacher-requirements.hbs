@@ -50,7 +50,7 @@
               {{ requiredTeachers.studentCount }} students
             </div>
             <div class="age-range-display inputs-display-input">
-              {{ requiredTeachers.ageRange.ageRange }}
+              {{ studentAge.ageRange }}
             </div>
           </div>
 
@@ -58,7 +58,7 @@
 
             {{#if requiredTeachers.tooManyStudentsError }}
               <div class="display-entry error-message">
-                Exceeds maximum group size of {{ requiredTeachers.ageRange.maxGroupSize }}
+                Exceeds maximum group size of {{ studentAge.maxGroupSize }}
               </div>
             {{/if}}
 
@@ -69,7 +69,7 @@
                   Regulations:
                 </div>
                 <div class="display-value">
-                  {{ requiredTeachers.ageRange.regulationNumber }} 
+                  {{ studentAge.regulationNumber }} 
                 </div>
               </div>
 
@@ -87,7 +87,7 @@
                   Educator Qualifications:
                 </div>
                 <div class="display-value">
-                  {{ requiredTeachers.ageRange.educatorQualifications }} 
+                  {{ studentAge.educatorQualifications }} 
                 </div>
               </div>
 
@@ -97,17 +97,22 @@
                   Admin Qualifications:
                 </div>
                 <div class="display-value">
-                  {{ requiredTeachers.ageRange.educatorQualifications }} 
+                  {{ requiredTeachers.administrator.administratorQualifications }} 
                 </div>
               </div>
 
-              {{#if requiredTeachers.ageRange.notes }}
+              {{#if notes }}
                 <div class="number-of-teachers-required display-entry">
                   <div class="display-property">
                     Notes:
                   </div>
                   <div class="display-value">
-                    {{ requiredTeachers.ageRange.notes }} 
+                    <div>
+                      {{ studentAge.notes }}
+                    </div>
+                    <div>
+                      {{ requiredTeachers.administrator.notes }}
+                    </div>
                   </div>
                 </div>
               {{/if}}
