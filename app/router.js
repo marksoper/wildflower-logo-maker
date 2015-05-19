@@ -10,7 +10,8 @@ Router.map(function() {
   this.route('view', {path: 'view/:logo_id'});
   this.route('logo', {path: '/:logo_id'});
   this.route('jurisdiction', { path: 'licensing' }, function() {
-      this.route('view', {path: ':jurisdiction_id'})
+    this.route('view', {path: ':jurisdiction_id'});
+    this.route('qualifications', {path: ':jurisdiction_id/qualifications'});
   });
 })
 

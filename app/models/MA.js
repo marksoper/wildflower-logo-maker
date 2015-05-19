@@ -8,7 +8,8 @@ var ageRanges = [
     educatorsRequiredPerNumberOfChildren: [ [[1,3],1], [[4,9], 2] ],
     educatorChildRatio: "1:3; one additional educator for 4-9 children",
     regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
-    educatorQualifications: "At least one Infant/Toddler Teacher, per 606 CMR 7.09(18)(c)2",
+    educatorQualifications: "Infant/Toddler Teacher",
+    educatorQualificationsRegulation: "606 CMR 7.09(18)(c)2",
     notes: "No more than 3 infants (up to 15 months old)"
   },
   {
@@ -19,7 +20,8 @@ var ageRanges = [
     educatorsRequiredPerNumberOfChildren: [ [[1,5],1], [[6,9], 2] ],
     educatorChildRatio: "1:5; one additional educator for 6-9 children",
     regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
-    educatorQualifications: "At least one Infant/Toddler and Preschool Teacher, per 606 CMR 7.09(18)(c)2"
+    educatorQualifications: "Infant/Toddler and Preschool Teacher",
+    educatorQualificationsRegulation: "606 CMR 7.09(18)(c)2"
   },
   {
     id: 2,
@@ -29,7 +31,8 @@ var ageRanges = [
     educatorsRequiredPerNumberOfChildren: [ [[1,10],1], [[11,20], 2] ],
     educatorChildRatio: "1:10",
     regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
-    educatorQualifications: "At least one Preschool Teacher, per 606 CMR 7.09(18)(c)2"
+    educatorQualifications: "Preschool Teacher",
+    educatorQualificationsRegulation: "606 CMR 7.09(18)(c)2"
   },
   {
     id: 3,
@@ -39,7 +42,8 @@ var ageRanges = [
     educatorsRequiredPerNumberOfChildren: [ [[1,13],1], [[14,26], 2] ],
     educatorChildRatio: "1:13",
     regulationNumber: "606 CMR 7.10(9)(c)1 & 606 CMR 7.10(9)(c)2",
-    educatorQualifications: "Group Leader, per 606 CMR 7.09(19)(a)2"
+    educatorQualifications: "Group Leader",
+    educatorQualificationsRegulation: "606 CMR 7.09(19)(a)2"
   }
 ];
 

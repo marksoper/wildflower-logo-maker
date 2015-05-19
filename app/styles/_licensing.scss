@@ -1,4 +1,9 @@
 .licensing {
+
+  div {
+    overflow: hidden;
+  }
+
   padding:0 20px;
   width: 100%;
   max-width: 1200px;
@@ -92,13 +97,12 @@
     display: flex;
     .display-property {
       width: 40%;
-      min-width: 160px;
-      max-width: 240px;
+      padding-right: 10px;
       font-size: 14px;
       font-weight: bold;
     }
     .display-value {
-
+      width:60%;
     }
   }
 
