@@ -25,7 +25,8 @@ var calculateRequiredTeachers = function(ageRange, studentCount) {
     studentCount: studentCount,
     tooManyStudentsError: tooManyStudentsError,
     numberOfTeachersRequired: numberOfTeachersRequired,
-    squareFootage: calculateSquareFootage(studentCount)
+    squareFootage: calculateSquareFootage(studentCount),
+    educatorQualifications: MA.educatorQualifications
   };
 };
 

@@ -1,11 +1,5 @@
 
-var fixedAgeGroups = [
-  {
-    id: 0,
-    groupName: "Infants",
-    ageRangeDisplay: "Up to 15 months old"
-  }
-];
+var regulationUrl = "http://www.mass.gov/courts/docs/lawlib/600-699cmr/606cmr7.pdf";
 
 var ageRanges = [
   {
@@ -114,7 +108,38 @@ var licensedCapacity = [
   }
 ];
 
+var educatorQualifications = {
+  "606 CMR 7.09(18)(c)2": {
+    title: "Teacher",
+    regulationNumber: "606 CMR 7.09(18)(c)2",
+    requirements: `a. Must be at least 21 years of age or have a high school diploma or equivalent and
+meet one of the following sets of requirements:
+i. have successfully completed three credits in category Child Growth and
+Development and have nine months of work experience or one practicum; or 
+ii. have a Child Development Associate (CDA) Credential; or
+iii. have graduated from a two-year high school vocational program in early
+childhood education, approved by the Department for both the education and
+experience requirements and have been evaluated and recommended by the
+program instructor.
+b. The following education may substitute for a portion of the required work
+experience:
+i. An Associate’s or Bachelor’s degree in early childhood education or a related
+field of study may substitute for six months of the required experience.
+ii. A Bachelor’s degree in an unrelated field of study may substitute for three
+months of the required experience.
+iii. For infant-toddler teachers, one continuing education unit (ten hours of
+instruction) in category Infant and Toddler Development, Care and Program
+Planning may substitute for three months of work experience.
+c. To be qualified as a preschool teacher, three months of the required work
+experience must be in caregiving to preschool age children.
+d. To be qualified as an infant/toddler teacher, three months of the required work
+experience must be in caregiving to infant/toddlers.`
+  }
+};
+
 export default {
+  regulationUrl: regulationUrl,
   ageRanges: ageRanges,
-  licensedCapacity: licensedCapacity
+  licensedCapacity: licensedCapacity,
+  educatorQualifications: educatorQualifications
 };
