@@ -1,10 +1,13 @@
 .licensing {
+  div {
+   overflow: hidden;
+  }
   padding:0 20px;
   width: 100%;
   max-width: 1200px;
   min-width: 720px;
 
-  .header, .scenario-selector, .licensing-step, .jurisdiction-selector, .index-header {
+  .header, .scenario-selector, .licensing-step, .jurisdiction-selector, .index-header, .educator-qualifications {
     padding-top: 20px;
     padding-bottom: 20px;
     padding-left:60px;
@@ -99,6 +102,28 @@
     }
     .display-value {
 
+    }
+  }
+
+  .educator-qualifications {
+    pre {
+      white-space: pre-wrap;       /* CSS 3 */
+      white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      white-space: -pre-wrap;      /* Opera 4-6 */
+      white-space: -o-pre-wrap;    /* Opera 7 */
+      word-wrap: break-word;       /* Internet Explorer 5.5+ */
+    } 
+    .educator-qualification {
+      margin:20px 0;
+      padding: 20px 0;
+    }
+    .qualification-name {
+      width: 35%;
+      float: left;
+    }
+    .qualification-desc {
+      width: 65%;
+      float: right;
     }
   }
 
