@@ -87,10 +87,11 @@
                   Educator Qualifications:
                 </div>
                 <div class="display-value">
-                  {{ requiredTeachers.ageRange.educatorQualifications }} 
+                  {{#link-to 'jurisdiction.qualifications' model.id titleBinding=requiredTeachers.ageRange.educatorQualificationsRegulationNumber }}
+                    {{ requiredTeachers.ageRange.educatorQualifications }}
+                  {{/link-to}}
                 </div>
               </div>
-
 
               <div class="number-of-teachers-required display-entry">
                 <div class="display-property">

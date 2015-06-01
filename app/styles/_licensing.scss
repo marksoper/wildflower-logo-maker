@@ -1,7 +1,4 @@
 .licensing {
-  div {
-   overflow: hidden;
-  }
   padding:0 20px;
   width: 100%;
   max-width: 1200px;
@@ -101,11 +98,14 @@
       font-weight: bold;
     }
     .display-value {
-
+      width: 60%;
     }
   }
 
   .educator-qualifications {
+    div {
+      overflow: hidden;
+    }
     pre {
       white-space: pre-wrap;       /* CSS 3 */
       white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
@@ -116,14 +116,6 @@
     .educator-qualification {
       margin:20px 0;
       padding: 20px 0;
-    }
-    .qualification-name {
-      width: 35%;
-      float: left;
-    }
-    .qualification-desc {
-      width: 65%;
-      float: right;
     }
   }
 
