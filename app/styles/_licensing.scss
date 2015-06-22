@@ -33,11 +33,14 @@
   }
   .scenario-selector {
 
+    overflow:hidden;
+
     .scenarios-label {
       font-weight: bold;
     }
     .scenario-entry {
-      margin: 10px 0;
+      float: left;
+      margin: 10px;
     }
   }
   .licensing-step {
